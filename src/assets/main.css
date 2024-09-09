@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track{
+  background: #2D3748;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #CBD5E0;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: #718096;
+}
+
+.vs__dropdown-toggle {
+  border: 0;
+  height: 40px;
+}
+.vs__dropdown-toggle input {
+  border: 0;
+  height: 30px;
+}
+
+.multiple .vs__dropdown-toggle {
+  border: 0;
+  height: auto !important;
+}
+.multiple .vs__dropdown-toggle input {
+  border: 0;
+  height: auto !important;
+}
+.cursor-grab {
+  cursor: grab;
+}
