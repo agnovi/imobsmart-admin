@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue'
 import Table from '../../components/Table.vue'
-import IPlus from '@/components/icones/IPlus.vue'
-import * as companyApi from '@/api/services/PropertyService'
-import FullSpinner from '@/components/FullSpinner.vue'
+import * as PropertyServices from '@/api/services/PropertyService'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import Iimport from '@/components/icones/Iimport.vue'
 import { formatCNPJ } from '@/util/helpers'
 import useAuth from '@/composables/useSession'
+import { IProperty } from '@/types/property'
+import Swal from 'sweetalert2'
 const { token } = useAuth()
 const router = useRouter()
 const toast = useToast()
-const company = ref<any[]>([])
+const items = ref<IProperty[]>([])
 const loading = ref(false)
 const pagination = reactive({
   page: 1,
@@ -21,17 +21,8 @@ const pagination = reactive({
 })
 const columns = ref([
   {
-    label: 'Razão social',
-    key: 'name'
-  },
-  {
-    label: 'CNPJ',
-    key: 'cnpj'
-  },
-  {
-    label: 'Rede',
-    key: 'rede',
-    custom: true,
+    label: 'Imóvel',
+    key: 'title'
   },
   {
     label: '',
@@ -70,22 +61,16 @@ watch(
 async function listItems() {
   loading.value = true
   try {
-    const d = await companyApi.listCompany(
+    const res = await PropertyServices.list(
       pagination.page,
       pagination.limit,
       search.value
-        ? {
-          name: {
-            contains: search.value
-          }
-        }
-        : undefined
     )
-    const newArray = d.data.items.map((i: any) => {
+    const newArray = res.data?.data?.items.map((i: any) => {
       return { ...i, cnpj: formatCNPJ(i.cnpj) }
     })
-    pagination.total = d.data.pagination.totalQuantity
-    company.value = newArray
+    pagination.total = res.data.pagination.totalQuantity
+    items.value = newArray
   } catch (error) {
     loading.value = false
   } finally {
@@ -93,19 +78,30 @@ async function listItems() {
   }
 }
 
-function navigation() {
-  router.push('/adicionar-empresa')
+function handleAddProperty() {
+  router.push('/adicionar-imovel')
 }
 
-async function deleteCategoria(item: any) {
-  await companyApi.deleteCompany(item.id)
-  toast.success('Empresa removido com sucesso')
-  listItems()
+async function deleteItem(item: any) {
+  Swal.fire({
+    title: '<strong>Atenção</strong>',
+    icon: 'question',
+    html: `Deseja realmente deletar o imóvel ${item.title}?`,
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: `Não`
+  }).then((result: any) => {
+    if (result.isConfirmed) {
+      PropertyServices.deleteItem(item.id).then((f: any) => {
+        listItems()
+        toast.success('Imóvel excluido com sucesso!')
+      })
+    }
+  })
 }
 
-async function editCategoria(item: any) {
-  const res = await companyApi.getCompany(item.id)
-  router.push(`/editar-empresa/${res.data.id}`)
+async function editItem(item: any) {
+  router.push(`/editar-imovel/${item.id}`)
 }
 function handleSearch(event: any) {
   search.value = event
@@ -117,23 +113,23 @@ function handleSearch(event: any) {
   <div>
     <h3 class="text-3xl font-medium text-gray-700">Imóveis</h3>
     <Table @remove-search="search = ''" @change-perPage="pagination.limit = $event" :filter-default="true"
-      :columns="columns" :rows="company" :total-page="pagination.total" :current-page="pagination.page"
-      :items-per-page="pagination.limit" :loading="loading" @edit-item="editCategoria"
-      @change-page="pagination.page = $event" @delete-item="deleteCategoria" @search="handleSearch($event)">
+      :columns="columns" :rows="items" :total-page="pagination.total" :current-page="pagination.page"
+      :items-per-page="pagination.limit" :loading="loading" @edit-item="editItem"
+      @change-page="pagination.page = $event" @delete-item="deleteItem" @search="handleSearch($event)">
       <template #rede="{ row }">
         <p>{{ row.NetworkCompany?.name }}</p>
       </template>
       <template #BtnTable>
         <div class="flex justify-end">
-          <button class="btn-import mx-2 whitespace-nowrap" @click="router.push('/importar-empresas')">
+          <button class="btn-import mx-2 whitespace-nowrap" @click="router.push('/importar-imoveis')">
             <div class="flex">
-              <span> Importar empresas </span>
+              <span> Importar imóveis </span>
               <span class="mx-2 mt-1">
                 <Iimport />
               </span>
             </div>
           </button>
-          <button class="btn-primary mx-2" @click="navigation">Adicionar empresa</button>
+          <button class="btn-primary mx-2" @click="handleAddProperty">Adicionar imóvel</button>
         </div>
       </template>
     </Table>

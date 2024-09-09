@@ -8,6 +8,8 @@ import FullSpinner from '@/components/FullSpinner.vue'
 import { customFilter } from '@/util/helpers'
 import useAuth from '@/composables/useSession'
 import CardForm from '@/components/CardForm.vue'
+import ISave from '@/components/icones/ISave.vue'
+
 import type { IUser } from '@/types/user'
 const { token } = useAuth()
 const toast = useToast()
@@ -19,9 +21,9 @@ const statusOtions = ref<any[]>([
   { id: 'PRE_REGISTER', text: 'Pré registrado' }
 ])
 const sexOptions = [
-  { label: "Masculino", value: "MALE" },
-  { label: "Feminino", value: "FEMALE" },
-];
+  { label: 'Masculino', value: 'MALE' },
+  { label: 'Feminino', value: 'FEMALE' }
+]
 const user = ref<IUser>({})
 const loading = ref(false)
 const loadingSave = ref(false)
@@ -39,7 +41,7 @@ onMounted(() => {
 
 async function handleSubmit() {
   const body: IUser = {
-    name_lastname: user.value.name_lastname,    
+    name_lastname: user.value.name_lastname,
     cpf: user.value?.cpf?.replace(/\D/g, ''),
     cellphone: user.value?.cellphone?.replace(/\D/g, ''),
     sex: user.value.sex,
@@ -50,7 +52,7 @@ async function handleSubmit() {
     hobbie: user.value.hobbie,
     nickname: user.value.nickname,
     password: user.value.password,
-    education: user.value.education,
+    education: user.value.education
   }
 
   const resetUser = () => {
@@ -63,9 +65,10 @@ async function handleSubmit() {
       await UserServices.createUser(body)
       // resetUser()
     } else {
+      delete body.password
       await UserServices.editUser({ ...body, id: user.value.id })
     }
-    toast.success(`Usuário ${user.value.id ? 'criado' : 'editado'} com sucesso!`)
+    toast.success(`Usuário ${!user.value.id ? 'criado' : 'editado'} com sucesso!`)
   } catch (error) {
     console.error('Erro ao salvar o usuário:', error)
   } finally {
@@ -79,7 +82,9 @@ async function handleSubmit() {
     <FullSpinner v-if="loading" />
     <div class="flex justify-between mb-3">
       <h3 class="text-3xl font-medium text-gray-700">
-        {{ route?.fullPath === '/adicionar-usuario' ? 'Novo Usuário admin' : 'Editar Usuário admin' }}
+        {{
+          route?.fullPath === '/adicionar-usuario' ? 'Novo Usuário admin' : 'Editar Usuário admin'
+        }}
       </h3>
       <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
         Voltar
@@ -102,12 +107,7 @@ async function handleSubmit() {
               rules="required|cpf"
               mask="###.###.###-##"
             />
-            <base-input
-              v-model="user.rg"
-              type="text"
-              label="RG"
-              mask="##.###.###-#"
-            />
+            <base-input v-model="user.rg" type="text" label="RG" mask="##.###.###-#" />
             <base-input
               v-model="user.cnpj"
               type="text"
@@ -118,12 +118,17 @@ async function handleSubmit() {
             <base-input v-model="user.sex" label="Sexo" is-slot>
               <base-select v-model="user.sex" :options="sexOptions" />
             </base-input>
-            <base-input v-model="user.cellphone" type="text" label="Telefone" mask="(##) #####-####" />
+            <base-input
+              v-model="user.cellphone"
+              type="text"
+              label="Telefone"
+              mask="(##) #####-####"
+            />
             <base-input v-model="user.email" type="email" label="E-mail" rules="email" />
             <base-input v-model="user.education" label="Escolaridade" />
             <base-input v-model="user.nickname" label="Nick name" />
             <base-input v-model="user.password" label="Senha" />
-            <base-input is-slot label="Status">
+            <!-- <base-input is-slot label="Status">
               <v-select
                 class="w-full"
                 v-model="user.status"
@@ -132,10 +137,16 @@ async function handleSubmit() {
                 value="id"
                 :filter="customFilter"
               />
-            </base-input>
+            </base-input> -->
           </div>
-          <div>
-            <base-button type="submit" :disabled="loadingSave" :loading="loadingSave" class="mt-20 max-w-fit">
+          <div class="flex justify-end mt-8">
+            <base-button
+              type="submit"
+              :disabled="loadingSave"
+              :loading="loadingSave"
+              class="max-w-fit"
+            >
+              <ISave />
               Salvar Alterações
             </base-button>
           </div>

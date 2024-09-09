@@ -32,13 +32,13 @@ const inactiveClassText = ref('text-[#6b7280]')
 
 const link = [
   { id: 1, title: 'Dashboard', path: '/dashboard' },
-  { id: 9, title: 'Importações', path: '/importacoes' },
+  // { id: 9, title: 'Importações', path: '/importacoes' },
   { id: 7, title: 'Usuários', path: '/usuarios' },
-  { id: 16, title: 'Contatos', path: '/contatos' },
+  // { id: 16, title: 'Contatos', path: '/contatos' },
   { id: 8, title: 'Usuários Admin', path: '/usuarios-admin' },
   { id: 4, title: 'Imóveis', path: '/imoveis' },
-  { id: 5, title: 'Cargos', path: '/cargos' },
-  { id: 6, title: 'Setores', path: '/setores' },
+  // { id: 5, title: 'Cargos', path: '/cargos' },
+  // { id: 6, title: 'Setores', path: '/setores' },
 ]
 
 const linkActive = ref('/dashboard')
@@ -81,7 +81,7 @@ function colorIcon(item: any) {
               }}</span>
           </router-link>
           <div v-if="item.path === '/dashboard'" class="flex gap-2 px-6 items-center mt-6 mb-2">
-            <p class=" text-[#495386] text-sm tracking-widest">IMPORTAÇÔES</p>
+            <p class=" text-[#495386] text-sm tracking-widest">USUÁRIOS</p>
             <hr class="w-full my-2 border-[#495386]" />
           </div>
           <div v-if="item.path === '/importacoes'" class="flex gap-2 px-6 items-center mt-6 mb-2">

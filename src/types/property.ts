@@ -1,4 +1,5 @@
 export interface IProperty {
+  id?: string | number;
   residential_type?: string;
   commercial_type?: string;
   title?: string;
@@ -17,10 +18,10 @@ export interface IProperty {
   images?: string;
   image_detach?: string;
   id_cond_ed?: number;
-  details?: Details;
-  dadosprim?: Dadosprim;
-  anuncio?: Anuncio;
-  confidencial?: Confidencial;
+  details: Details;
+  dadosprim: Dadosprim;
+  anuncio: Anuncio;
+  confidencial: Confidencial;
 }
 interface Confidencial {
   reference: string;

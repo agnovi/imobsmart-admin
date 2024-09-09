@@ -8,6 +8,8 @@ import Button from '@/components/Button.vue';
 import FullSpinner from '@/components/FullSpinner.vue'
 import LoadingGit from '@/components/LoadingGit.vue'
 import Select from '@/components/Select.vue'
+import CheckBox from '@/components/CheckBox.vue'
+import TextArea from '@/components/TextArea.vue'
 
 const GlobalComponents = {
   install(Vue: any) {
@@ -20,6 +22,8 @@ const GlobalComponents = {
     Vue.component('base-button', Button)
     Vue.component('LoadingGit', LoadingGit)
     Vue.component('base-select', Select)
+    Vue.component('base-checkbox', CheckBox)
+    Vue.component('base-textarea', TextArea)
   }
 };
 

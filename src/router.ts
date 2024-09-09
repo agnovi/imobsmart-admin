@@ -147,23 +147,23 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/imoveis',
     name: 'Imóveis',
-    component: () => import('./views/company/list-company.vue'),
+    component: () => import('./views/property/list.vue'),
     meta: {
       auth: true
     }
   },
   {
-    path: '/adicionar-empresa',
-    name: 'Adicionar empresa',
-    component: () => import('./views/company/createupdate-company.vue'),
+    path: '/adicionar-imovel',
+    name: 'Adicionar imovel',
+    component: () => import('./views/property/createupdate.vue'),
     meta: {
       auth: true
     }
   },
   {
-    path: '/editar-empresa/:id',
-    name: 'Editar empresa',
-    component: () => import('./views/company/createupdate-company.vue'),
+    path: '/editar-imovel/:id',
+    name: 'Editar imovel',
+    component: () => import('./views/property/createupdate.vue'),
     meta: {
       auth: true
     }
@@ -177,8 +177,8 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/importar-empresas',
-    name: 'ImportarEmpresas',
+    path: '/importar-imoveis',
+    name: 'ImportarImoveis',
     component: () => import('./views/ImportCompanies.vue'),
     meta: {
       auth: true
