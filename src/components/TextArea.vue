@@ -10,15 +10,15 @@ const props = withDefaults(
     rows: '8'
   }
 )
-const value = defineModel('')
+const value = defineModel({ required: true, default: '' })
 </script>
 
 <template>
-    <textarea
-      v-model="value"
-      :rows="rows"
-      class="block w-full bg-white border-0 outline-none focus:ring-0 rounded-lg"
-      :placeholder="placeholder"
-    >
-    </textarea>
+  <textarea
+    v-model="value"
+    :rows="rows"
+    class="block w-full bg-white border-0 outline-none focus:ring-0 rounded-lg"
+    :placeholder="placeholder"
+  >
+  </textarea>
 </template>

@@ -18,12 +18,12 @@ export interface IProperty {
   images?: string;
   image_detach?: string;
   id_cond_ed?: number;
-  details: Details;
-  dadosprim: Dadosprim;
-  anuncio: Anuncio;
-  confidencial: Confidencial;
+  details?: IDetails;
+  dadosprim?: IDadosprim;
+  anuncio?: IAnuncio;
+  confidencial?: IConfidencial;
 }
-interface Confidencial {
+export interface IConfidencial {
   reference: string;
   name: string;
   email: string;
@@ -41,7 +41,7 @@ interface Confidencial {
   projects_approved: boolean;
   approved_environmental_agency: boolean;
 }
-interface Anuncio {
+export interface IAnuncio {
   web_advertisement: boolean;
   emphasis: boolean;
   super_highlight: boolean;
@@ -61,7 +61,7 @@ interface Anuncio {
   withdrawal_request: string;
   withdrawal_date: string;
 }
-interface Dadosprim {
+export interface IDadosprim {
   reference: string;
   sale: number;
   sale_valuation: number;
@@ -76,7 +76,7 @@ interface Dadosprim {
   common_area: number;
   private_area: number;
   total_land_area: number;
-  go_free: string;
+  go_free: number;
   auth_to_negotiate: boolean;
   end_of_authorization: string;
   exclusive: boolean;
@@ -108,7 +108,7 @@ interface Dadosprim {
   pass_on_promotion_payment_conditions: string;
   method_of_paying_the_outstanding_balance: string;
 }
-interface Details {
+export interface IDetails {
   total_area_land: number;
   built_useful: number;
   common_area: number;
@@ -116,7 +116,7 @@ interface Details {
   external_area: number;
   maneuvering_area: number;
   patio_area: number;
-  go_free: string;
+  go_free: number;
   Topography: string;
   Property_face: string;
   property_position: string;
