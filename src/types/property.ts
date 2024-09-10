@@ -15,7 +15,7 @@ export interface IProperty {
   location?: string;
   square_meter_sale?: number;
   sale_value?: number;
-  images?: string;
+  images?: { url: string, id?: number }[];
   image_detach?: string;
   id_cond_ed?: number;
   details?: IDetails;

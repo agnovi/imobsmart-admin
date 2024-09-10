@@ -22,7 +22,7 @@ const value = defineModel()
       class="form-checkbox h-5 w-5 text-primary-500"
       @change="onChange"
     />
-    <label v-if="label" :for="id" class="ml-2 block text-sm text-gray-900">
+    <label v-if="label" :for="id" class="ml-2 block text-sm">
       {{ label }}
     </label>
   </div>

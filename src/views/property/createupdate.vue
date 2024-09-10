@@ -12,6 +12,7 @@ import MainInformations from './forms/MainInformationsForm.vue'
 import Details from './forms/DetailsForm.vue'
 import Anuncio from './forms/AnuncioForm.vue'
 import Confidencial from './forms/ConfidencialForm.vue'
+import ImagesForm from './forms/ImagesForm.vue'
 import Tabs from '@/components/Tabs.vue'
 
 const mock = {
@@ -127,7 +128,12 @@ const mock = {
   },
   dormitory_number: 2,
   image_detach: '',
-  images: '',
+  images: [
+    {
+      url: 'https://system.soprojetos.com.br/files/1491/project_page_e/PAD-COD43-FOTO-1-WEB.jpg?1659015535',
+      id: 12
+    }
+  ],
   IPTU_value: 132,
   location: 'teste loc',
   residential_type: 'APARTMENT',
@@ -264,7 +270,12 @@ const basicInfo = ref<IProperty>({
   location: '',
   square_meter_sale: 0,
   sale_value: 0,
-  images: '',
+  images: [
+    {
+      url: 'https://system.soprojetos.com.br/files/1491/project_page_e/PAD-COD43-FOTO-1-WEB.jpg?1659015535',
+      id: 12
+    }
+  ],
   image_detach: ''
 })
 const tabList = [
@@ -272,7 +283,8 @@ const tabList = [
   'Informações Principais',
   'Detalhes',
   'Anuncio',
-  'Confidêncial'
+  'Confidêncial',
+  'Imagens'
 ]
 
 const loadingSave = ref(false)
@@ -311,13 +323,26 @@ async function load() {
   confidencial.value = { ...res.data.confidencial }
 }
 
+function handleAddImage(imgItem: { url: string; id?: number }) {
+    if(Array.isArray(basicInfo.value.images)) {
+        basicInfo.value.images.push(imgItem)
+    } else {
+        basicInfo.value.images = [imgItem]
+    }
+}
+function handleRemoveImage(imgItem: { url: string; id?: number }) {
+    if(Array.isArray(basicInfo.value.images)) {
+        basicInfo.value.images = basicInfo.value.images.filter((img) => img.url !== imgItem.url)
+    }
+}
+
 onMounted(() => {
-    const res = {data: mock}
-    basicInfo.value = { ...res.data }
-  mainInfo.value = { ...res.data.dadosprim }
-  details.value = { ...res.data.details }
-  anuncio.value = { ...res.data.anuncio }
-  confidencial.value = { ...res.data.confidencial }
+  //   const res = { data: mock }
+  //   basicInfo.value = { ...res.data }
+  //   mainInfo.value = { ...res.data.dadosprim }
+  //   details.value = { ...res.data.details }
+  //   anuncio.value = { ...res.data.anuncio }
+  //   confidencial.value = { ...res.data.confidencial }
   if (token.value && route.params.id) {
     load()
   }
@@ -351,6 +376,14 @@ onMounted(() => {
 
           <!-- Confidential Information -->
           <Confidencial v-if="activeTab === 'Confidêncial'" v-model="confidencial" />
+
+          <!-- Imagens -->
+          <ImagesForm
+            v-if="activeTab === 'Imagens'"
+            :images="basicInfo.images"
+            @addImage="handleAddImage"
+            @removeImage="handleRemoveImage"
+          />
         </template>
       </Tabs>
 
