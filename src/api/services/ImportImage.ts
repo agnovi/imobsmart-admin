@@ -1,7 +1,7 @@
 import imageCompression from 'browser-image-compression';
 import { http } from '../api';
 
-const controller = 'images';
+const controller = 'property/upload';
 
 export async function importImage(file: File, type?: 'image' | 'user-image') {
   try {
@@ -21,7 +21,7 @@ export async function importImage(file: File, type?: 'image' | 'user-image') {
     form.append('file', compressedFile);
 
     // Envia a imagem comprimida para a API
-    return http.post(`${controller}?type=${type}`, form, {
+    return http.post(`${controller}`, form, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

@@ -32,7 +32,7 @@ async function login() {
 </script>
 <template>
   <div class="bg-gray-200 min-h-screen">
-    <div class="bg-[#09BA72] flex justify-center items-center h-[300px]">
+    <div class="bg-[#2a382a] flex justify-center items-center h-[300px]">
         <div><img src="/logo.png" alt="banner" class="" /></div>
       </div>
     <div class="flex items-center justify-center px-6 area-login">
