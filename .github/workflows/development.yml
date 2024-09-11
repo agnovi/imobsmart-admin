@@ -22,6 +22,7 @@ jobs:
     env:
       VITE_API_BASE_URL: 'https://api-imobsmart.novilab.com.br/api/'
       VITE_API_LANDING_URL: 'https://imobsmart.novilab.com.br/'
+      VITE_APP_API_URL: 'https://api-imobsmart.novilab.com.br/api/''
       BASE_S3: 'development'
 
     # Steps represent a sequence of tasks that will be executed as part of the job
