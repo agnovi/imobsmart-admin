@@ -2,7 +2,6 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import Swal from 'sweetalert2'
 import Table from '@/components/Table.vue'
-import FullSpinner from '@/components/FullSpinner.vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { formatCPF } from '@/util/helpers'

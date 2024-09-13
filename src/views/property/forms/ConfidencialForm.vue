@@ -3,24 +3,7 @@
 import type { IConfidencial } from '@/types/property'
 const confidencial = defineModel<IConfidencial>({
   required: true,
-  default: {
-    reference: '',
-    name: '',
-    email: '',
-    cell_phone: '',
-    observations: '',
-    nameCJ: '',
-    emailCJ: '',
-    telephoneCJ: '',
-    codeIPTU: '',
-    registration_number: '',
-    electricity_code: '',
-    water_code: '',
-    documentation_observation: '',
-    titles_rights: '',
-    projects_approved: false,
-    approved_environmental_agency: false
-  }
+  default: {}
 })
 </script>
 <template>

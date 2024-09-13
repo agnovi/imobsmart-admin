@@ -4,23 +4,7 @@ import { residentialOptions } from '@/util/constants'
 import type { IProperty } from '@/types/property'
 const data = defineModel<IProperty>({
   required: true,
-  default: {
-    title: '',
-    address: '',
-    useful_area: 0,
-    dormitory_number: 0,
-    vacancies: 0,
-    bathroom: 0,
-    accepts_pets: false,
-    description: '',
-    condominium_value: 0,
-    IPTU_value: 0,
-    location: '',
-    square_meter_sale: 0,
-    sale_value: 0,
-    images: '',
-    image_detach: ''
-  }
+  default: {}
 })
 </script>
 <template>

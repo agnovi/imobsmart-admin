@@ -149,130 +149,13 @@ const router = useRouter()
 const route = useRoute()
 const { token } = useAuth()
 
-const mainInfo = ref<IDadosprim>({
-  reference: '',
-  sale: 0,
-  sale_valuation: 0,
-  rental: 0,
-  rental_evaluation: 0,
-  condominium: 0,
-  leased: false,
-  accommodates_how_many_people: 0,
-  type_of_rental: '',
-  dt_evaluatio: '',
-  useful_built_area: 0,
-  common_area: 0,
-  private_area: 0,
-  total_land_area: 0,
-  go_free: 0,
-  auth_to_negotiate: false,
-  end_of_authorization: '',
-  exclusive: false,
-  end_of_exclusive: '',
-  registered_by: '',
-  alternative_reference: '',
-  status: true,
-  type: '',
-  purpose: '',
-  name: '',
-  standard: '',
-  zoning: '',
-  gated_condominium: false,
-  default_location: '',
-  IPTU_value: 0,
-  year_construction: 0,
-  reform_year: 0,
-  used_FGTS_in_the_last_3_years: false,
-  accept_exchange: false,
-  accept_financing: false,
-  situation: '',
-  needs_renovation: '',
-  rental_guarantee_accepted_by_the_owner: '',
-  internal_comments: '',
-  commercial_condition: '',
-  nearby_meters: '',
-  pickup: '',
-  files: '',
-  pass_on_promotion_payment_conditions: '',
-  method_of_paying_the_outstanding_balance: ''
-})
+const mainInfo = ref<IDadosprim>({})
 
-const anuncio = ref<IAnuncio>({
-  web_advertisement: false,
-  emphasis: false,
-  super_highlight: false,
-  portals: '',
-  title: '',
-  characteristics_of_the_property: '',
-  differences: '',
-  leisure_area: '',
-  privileged_location: '',
-  location: '',
-  advertising_in_print_media: false,
-  printed_media: '',
-  printed_media_description: '',
-  sign_on_site: false,
-  placement_request: '',
-  placement_date: '',
-  withdrawal_request: '',
-  withdrawal_date: ''
-})
+const anuncio = ref<IAnuncio>({})
 
-const confidencial = ref<IConfidencial>({
-  reference: '',
-  name: '',
-  email: '',
-  cell_phone: '',
-  observations: '',
-  nameCJ: '',
-  emailCJ: '',
-  telephoneCJ: '',
-  codeIPTU: '',
-  registration_number: '',
-  electricity_code: '',
-  water_code: '',
-  documentation_observation: '',
-  titles_rights: '',
-  projects_approved: false,
-  approved_environmental_agency: false
-})
-const details = ref<IDetails>({
-  total_area_land: 0,
-  built_useful: 0,
-  common_area: 0,
-  private_area: 0,
-  external_area: 0,
-  maneuvering_area: 0,
-  patio_area: 0,
-  go_free: 0,
-  Topography: '',
-  Property_face: '',
-  property_position: '',
-  cabinets: '',
-  floor: '',
-  intimate: '',
-  social: '',
-  leisure: '',
-  services: '',
-  infrastructure: ''
-})
-const basicInfo = ref<IProperty>({
-  title: '',
-  address: '',
-  useful_area: 0,
-  dormitory_number: 0,
-  vacancies: 0,
-  bathroom: 0,
-  accepts_pets: false,
-  description: '',
-  condominium_value: 0,
-  IPTU_value: 0,
-  location: '',
-  square_meter_sale: 0,
-  sale_value: 0,
-  images: [],
-  image_detach: ''
-})
+const confidencial = ref<IConfidencial>({})
+const details = ref<IDetails>({})
+const basicInfo = ref<IProperty>({})
 const tabList = [
   'Informações Básicas',
   'Informações Principais',
@@ -290,11 +173,17 @@ async function onSubmit() {
   try {
     const body: IProperty = {
       ...basicInfo.value,
-      details: { ...details.value },
-      dadosprim: { ...mainInfo.value },
-      anuncio: { ...anuncio.value, placement_date: anuncio.value?.placement_date?.split('T')[0], withdrawal_date: anuncio.value?.withdrawal_date?.split('T')[0] },
-      confidencial: { ...confidencial.value }
     }
+
+    if(Object.keys(details.value).length > 0)
+      body.details = details.value
+    if(Object.keys(anuncio.value).length > 0)
+      body.anuncio = { ...anuncio.value, placement_date: anuncio.value?.placement_date?.split('T')[0], withdrawal_date: anuncio.value?.withdrawal_date?.split('T')[0] }
+    if(Object.keys(confidencial.value).length > 0)
+      body.confidencial = confidencial.value
+    if(Object.keys(mainInfo.value).length > 0)
+      body.dadosprim = mainInfo.value
+
     if (!basicInfo.value.id) {
       await PropertyServices.create(body)
     } else {

@@ -3,26 +3,7 @@
 import type { IDetails } from '@/types/property'
 const details = defineModel<IDetails>({
   required: true,
-  default: {
-    total_area_land: 0,
-    built_useful: 0,
-    common_area: 0,
-    private_area: 0,
-    external_area: 0,
-    maneuvering_area: 0,
-    patio_area: 0,
-    go_free: 0,
-    Topography: '',
-    Property_face: '',
-    property_position: '',
-    cabinets: '',
-    floor: '',
-    intimate: '',
-    social: '',
-    leisure: '',
-    services: '',
-    infrastructure: ''
-  }
+  default: {}
 })
 </script>
 <template>

@@ -3,26 +3,7 @@
 import type { IAnuncio } from '@/types/property'
 const anuncio = defineModel<IAnuncio>({
   required: true,
-  default: {
-    web_advertisement: false,
-    emphasis: false,
-    super_highlight: false,
-    portals: '',
-    title: '',
-    characteristics_of_the_property: '',
-    differences: '',
-    leisure_area: '',
-    privileged_location: '',
-    location: '',
-    advertising_in_print_media: false,
-    printed_media: '',
-    printed_media_description: '',
-    sign_on_site: false,
-    placement_request: '',
-    placement_date: '',
-    withdrawal_request: '',
-    withdrawal_date: ''
-  }
+  default: {}
 })
 </script>
 <template>
