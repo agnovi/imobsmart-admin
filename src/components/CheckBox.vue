@@ -2,6 +2,7 @@
 const props = withDefaults(
   defineProps<{
     label?: string
+    checked?: boolean
     onChange: () => void
   }>(),
   {
@@ -18,6 +19,7 @@ const value = defineModel()
     <input
       v-model="value"
       :id="id"
+      :checked="checked"
       type="checkbox"
       class="form-checkbox h-5 w-5 text-primary-500"
       @change="onChange"

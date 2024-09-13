@@ -270,12 +270,7 @@ const basicInfo = ref<IProperty>({
   location: '',
   square_meter_sale: 0,
   sale_value: 0,
-  images: [
-    {
-      url: 'https://system.soprojetos.com.br/files/1491/project_page_e/PAD-COD43-FOTO-1-WEB.jpg?1659015535',
-      id: 12
-    }
-  ],
+  images: [],
   image_detach: ''
 })
 const tabList = [
@@ -297,7 +292,7 @@ async function onSubmit() {
       ...basicInfo.value,
       details: { ...details.value },
       dadosprim: { ...mainInfo.value },
-      anuncio: { ...anuncio.value },
+      anuncio: { ...anuncio.value, placement_date: anuncio.value?.placement_date?.split('T')[0], withdrawal_date: anuncio.value?.withdrawal_date?.split('T')[0] },
       confidencial: { ...confidencial.value }
     }
     if (!basicInfo.value.id) {
@@ -317,32 +312,25 @@ async function onSubmit() {
 async function load() {
   const res = await PropertyServices.getById(String(route.params.id))
   basicInfo.value = { ...res.data }
-  mainInfo.value = { ...res.data.dadosprim }
-  details.value = { ...res.data.details }
-  anuncio.value = { ...res.data.anuncio }
-  confidencial.value = { ...res.data.confidencial }
+  mainInfo.value = { ...res.data.dadosprim[0] }
+  details.value = { ...res.data.details[0] }
+  anuncio.value = { ...res.data.anuncia[0] }
+  confidencial.value = { ...res.data.confidencial[0] }
+
+  if (basicInfo.value.anuncia) delete basicInfo.value.anuncia
 }
 
-function handleAddImage(imgItem: { url: string; id?: number }) {
-    if(Array.isArray(basicInfo.value.images)) {
-        basicInfo.value.images.push(imgItem)
-    } else {
-        basicInfo.value.images = [imgItem]
-    }
-}
-function handleRemoveImage(imgItem: { url: string; id?: number }) {
-    if(Array.isArray(basicInfo.value.images)) {
-        basicInfo.value.images = basicInfo.value.images.filter((img) => img.url !== imgItem.url)
-    }
+function handleUpdateListImages(imgItems: { url: string; emphase: boolean }[]) {
+  basicInfo.value.images = imgItems
 }
 
 onMounted(() => {
-  //   const res = { data: mock }
-  //   basicInfo.value = { ...res.data }
-  //   mainInfo.value = { ...res.data.dadosprim }
-  //   details.value = { ...res.data.details }
-  //   anuncio.value = { ...res.data.anuncio }
-  //   confidencial.value = { ...res.data.confidencial }
+  // const res = { data: mock }
+  // basicInfo.value = { ...res.data }
+  // mainInfo.value = { ...res.data.dadosprim }
+  // details.value = { ...res.data.details }
+  // anuncio.value = { ...res.data.anuncio }
+  // confidencial.value = { ...res.data.confidencial }
   if (token.value && route.params.id) {
     load()
   }
@@ -381,8 +369,7 @@ onMounted(() => {
           <ImagesForm
             v-if="activeTab === 'Imagens'"
             :images="basicInfo.images"
-            @addImage="handleAddImage"
-            @removeImage="handleRemoveImage"
+            @updateImageList="handleUpdateListImages"
           />
         </template>
       </Tabs>

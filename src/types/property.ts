@@ -1,5 +1,6 @@
 export interface IProperty {
   id?: string | number;
+  anuncia?: any;
   residential_type?: string;
   commercial_type?: string;
   title?: string;
@@ -15,7 +16,7 @@ export interface IProperty {
   location?: string;
   square_meter_sale?: number;
   sale_value?: number;
-  images?: { url: string, id?: number }[];
+  images?: { url: string, emphase?: boolean }[];
   image_detach?: string;
   id_cond_ed?: number;
   details?: IDetails;
