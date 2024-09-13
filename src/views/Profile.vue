@@ -24,6 +24,7 @@ const pixOptions = [
 
 async function loadUser() {
   await getUser(userState.value.id, { associations :true, campaigns: true}).then(({ data }: any) => {
+
     console.log('data');
     console.log(data);
     user.value = data;
@@ -72,16 +73,16 @@ onMounted(() => {
         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-1">
           <div>
             <from class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
-              <base-input v-model="user.name" type="text" label="Nome Completo" rules="required" />
+              <base-input v-model="user.name_lastname" type="text" label="Nome Completo" rules="required" />
               <base-input v-model="user.email" type="email" label="E-mail" rules="required" />
-              <base-input v-model="user.phone" type="text" label="Telefone" mask="(##) #####-####" />
+              <!-- <base-input v-model="user.phone" type="text" label="Telefone" mask="(##) #####-####" /> -->
             </from>
           </div>
         </div>
-        <div>
-          <button class="btn-saved mt-20" @click="Salvar(user)">
+        <div class="flex justify-end">
+          <base-button class="btn-saved mt-20 w-fit" @click="Salvar(user)">
             Salvar Alterações
-          </button>
+          </base-button>
         </div>
       </template>
     </CardForm>

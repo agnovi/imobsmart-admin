@@ -41,15 +41,6 @@ const columns = ref([
     custom: true
   },
   {
-    label: 'Cargo',
-    key: 'role'
-  },
-  {
-    label: 'Status',
-    key: 'status',
-    custom: true
-  },
-  {
     label: '',
     key: 'actions'
   }

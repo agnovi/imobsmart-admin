@@ -107,37 +107,7 @@ async function handleSubmit() {
               rules="required|cpf"
               mask="###.###.###-##"
             />
-            <base-input v-model="user.rg" type="text" label="RG" mask="##.###.###-#" />
-            <base-input
-              v-model="user.cnpj"
-              type="text"
-              label="CNPJ"
-              rules="cnpj"
-              mask="##.###.###/####-##"
-            />
-            <base-input v-model="user.sex" label="Sexo" is-slot>
-              <base-select v-model="user.sex" :options="sexOptions" />
-            </base-input>
-            <base-input
-              v-model="user.cellphone"
-              type="text"
-              label="Telefone"
-              mask="(##) #####-####"
-            />
             <base-input v-model="user.email" type="email" label="E-mail" rules="email" />
-            <base-input v-model="user.education" label="Escolaridade" />
-            <base-input v-model="user.nickname" label="Nick name" />
-            <base-input v-model="user.password" label="Senha" />
-            <!-- <base-input is-slot label="Status">
-              <v-select
-                class="w-full"
-                v-model="user.status"
-                :options="statusOtions"
-                label="text"
-                value="id"
-                :filter="customFilter"
-              />
-            </base-input> -->
           </div>
           <div class="flex justify-end mt-8">
             <base-button

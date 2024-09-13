@@ -35,7 +35,7 @@ export function deleteUser(id: number) {
 
 
 export function resetPassword(id: any, data: any) {
-  return http.put(`${controller}/reset/password/${id}`, data)
+  return http.put(`${controller}/password/${id}`, data)
 }
 
 

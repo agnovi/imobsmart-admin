@@ -82,8 +82,13 @@ async function submitNewPassword() {
     }
     
     try {
+
+        const body = {
+            oldPassword: payload.value.oldPassword,
+            password: payload.value.password
+        }
         
-        await resetPassword(userState.value.id, payload.value);
+        await resetPassword(userState.value.id, body);
         toast.success('Senha alterada com sucesso')
         emit('close')
     } catch (error) {
