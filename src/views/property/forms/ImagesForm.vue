@@ -45,6 +45,9 @@ async function handleAddImage(event: Event) {
     try {
       loadingSaveImage.value = true
       const res = await importImage(file, 'image')
+      if(!Array.isArray(itemsImages.value))
+        itemsImages.value = []
+
       itemsImages.value.push({ url: res.data.link, emphase: false })
       emit('updateImageList', itemsImages.value)
     } catch (error) {
