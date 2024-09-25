@@ -4,7 +4,7 @@ import { http } from '../api'
 const controler = 'auth'
 
 export function login(user: Pick<IUser, 'email' | 'password'>) {
-  return http.post(`${controler}/signin`, user)
+  return http.post(`${controler}/signin?user=false`, user)
 }
 
 export function refreshToken(refreshToken: string) {

@@ -14,6 +14,7 @@ import Anuncio from './forms/AnuncioForm.vue'
 import Confidencial from './forms/ConfidencialForm.vue'
 import ImagesForm from './forms/ImagesForm.vue'
 import Tabs from '@/components/Tabs.vue'
+import { removeNullFields } from '@/util/helpers'
 
 const mock = {
   accepts_pets: false,
@@ -184,11 +185,14 @@ async function onSubmit() {
     if(Object.keys(mainInfo.value).length > 0)
       body.dadosprim = mainInfo.value
 
+    const bodySemNull = removeNullFields(body)
+
     if (!basicInfo.value.id) {
-      await PropertyServices.create(body)
+      await PropertyServices.create(bodySemNull)
     } else {
-      await PropertyServices.edit(body, basicInfo.value.id)
+      await PropertyServices.edit(bodySemNull, basicInfo.value.id)
     }
+
     toast.success(`Imóvel ${!basicInfo.value.id ? 'cadastrado' : 'editado'} com sucesso!`)
     router.push('/imoveis')
   } catch (error) {
@@ -206,7 +210,13 @@ async function load() {
   anuncio.value = { ...res.data.anuncia[0] }
   confidencial.value = { ...res.data.confidencial[0] }
 
+  
   if (basicInfo.value.anuncia) delete basicInfo.value.anuncia
+  
+  delete basicInfo.value.dadosprim
+  delete basicInfo.value.details
+  delete basicInfo.value.anuncio
+  delete basicInfo.value.confidencial
 }
 
 function handleUpdateListImages(imgItems: { url: string; emphase: boolean }[]) {

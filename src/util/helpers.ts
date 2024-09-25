@@ -262,3 +262,15 @@ export function isCNPJ(cnpj: string): boolean {
 
   return true
 }
+
+export function removeNullFields(obj: Record<string, any>): Record<string, any> {
+  // Cria um novo objeto sem as chaves cujo valor é null
+  return Object.fromEntries(
+    Object.entries(obj)
+      .filter(([_, value]) => value !== null) // Filtra os campos com valor null
+      .map(([key, value]) => 
+        // Se o valor for um objeto, chama a função recursivamente
+        [key, value && typeof value === 'object' && !Array.isArray(value) ? removeNullFields(value) : value]
+      )
+  );
+}
