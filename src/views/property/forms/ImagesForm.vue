@@ -18,6 +18,8 @@ const itemsImages = ref<any>(props.images)
 const loadingSaveImage = ref(false)
 const inputFile = ref<HTMLInputElement | null>(null)
 
+defineExpose({ loadingSaveImage })
+
 function handleEmphase(idx: number) {
   itemsImages.value = itemsImages.value.map((image: any, index: number) => {
     if (index === idx) {
@@ -37,25 +39,37 @@ function handleRemoveImage(imgItem: { url: string; emphase?: number }) {
   emit('updateImageList', itemsImages.value)
 }
 
-async function handleAddImage(event: Event) {
-  if (loadingSaveImage.value) return
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
+async function handleUploadFiles(event: Event) {
+  try {
+    if (loadingSaveImage.value) return
+
+    loadingSaveImage.value = true
+
+    const target = event.target as HTMLInputElement
+    const files = target.files
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        if (file) {
+          await handleAddImage(file)
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loadingSaveImage.value = false
+  }
+}
+
+async function handleAddImage(file: File) {
   if (file) {
-    try {
-      loadingSaveImage.value = true
       const res = await importImage(file, 'image')
       if(!Array.isArray(itemsImages.value))
         itemsImages.value = []
 
-      itemsImages.value.push({ url: res.data.link, emphase: false })
+      itemsImages.value.push({ url: res.data.url, emphase: false })
       emit('updateImageList', itemsImages.value)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      loadingSaveImage.value = false
-      inputFile.value = null
-    }
   }
 }
 </script>
@@ -99,7 +113,7 @@ async function handleAddImage(event: Event) {
         >
           <LoadingGit v-if="loadingSaveImage" size="120" />
           <PlusImage v-else size="120" color="#fff" />
-          <input ref="inputFile" type="file" class="hidden" @change="handleAddImage" />
+          <input ref="inputFile" multiple type="file" class="hidden" @change="handleUploadFiles" />
         </label>
       </div>
     </div>

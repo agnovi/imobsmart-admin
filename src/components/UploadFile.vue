@@ -191,7 +191,7 @@ const uploadImages = async (result: any) => {
           return {
             status: data.status,
             message: 'Upload com sucesso',
-            url: data.data // URL do arquivo, ajuste conforme sua região se necessário
+            url: data.url // URL do arquivo, ajuste conforme sua região se necessário
           }
         } catch (error) {
           loading.value = false

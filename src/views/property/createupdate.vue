@@ -153,7 +153,7 @@ const { token } = useAuth()
 const mainInfo = ref<IDadosprim>({})
 
 const anuncio = ref<IAnuncio>({})
-
+const imageForm = ref<any>(null)
 const confidencial = ref<IConfidencial>({})
 const details = ref<IDetails>({})
 const basicInfo = ref<IProperty>({})
@@ -204,11 +204,11 @@ async function onSubmit() {
 
 async function load() {
   const res = await PropertyServices.getById(String(route.params.id))
-  basicInfo.value = { ...res.data }
-  mainInfo.value = { ...res.data.dadosprim[0] }
-  details.value = { ...res.data.details[0] }
-  anuncio.value = { ...res.data.anuncia[0] }
-  confidencial.value = { ...res.data.confidencial[0] }
+  basicInfo.value = { ...res.data.data }
+  mainInfo.value = { ...res.data.data.dadosprim[0] }
+  details.value = { ...res.data.data.details[0] }
+  anuncio.value = { ...res.data.data.anuncia[0] }
+  confidencial.value = { ...res.data.data.confidencial[0] }
 
   
   if (basicInfo.value.anuncia) delete basicInfo.value.anuncia
@@ -228,11 +228,11 @@ function handleUpdateListImages(imgItems: { url: string; emphase: boolean }[]) {
 
 onMounted(() => {
   // const res = { data: mock }
-  // basicInfo.value = { ...res.data }
-  // mainInfo.value = { ...res.data.dadosprim }
-  // details.value = { ...res.data.details }
-  // anuncio.value = { ...res.data.anuncio }
-  // confidencial.value = { ...res.data.confidencial }
+  // basicInfo.value = { ...res.data.data }
+  // mainInfo.value = { ...res.data.data.dadosprim }
+  // details.value = { ...res.data.data.details }
+  // anuncio.value = { ...res.data.data.anuncio }
+  // confidencial.value = { ...res.data.data.confidencial }
   if (token.value && route.params.id) {
     load()
   }
@@ -270,6 +270,7 @@ onMounted(() => {
           <!-- Imagens -->
           <ImagesForm
             v-if="activeTab === 'Imagens'"
+            ref="imageForm"
             :images="basicInfo.images"
             @updateImageList="handleUpdateListImages"
           />
@@ -278,7 +279,7 @@ onMounted(() => {
 
       <!-- Submit Button -->
       <div class="flex justify-end mt-8">
-        <base-button type="submit" :disabled="loadingSave" :loading="loadingSave" class="max-w-fit">
+        <base-button type="submit" :disabled="loadingSave || imageForm?.loadingSaveImage" :loading="loadingSave || imageForm?.loadingSaveImage" class="max-w-fit">
           <ISave />
           Salvar
         </base-button>
