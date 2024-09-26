@@ -217,6 +217,9 @@ async function load() {
   delete basicInfo.value.details
   delete basicInfo.value.anuncio
   delete basicInfo.value.confidencial
+
+  if(!Array.isArray(basicInfo.value?.images))
+    basicInfo.value.images = []
 }
 
 function handleUpdateListImages(imgItems: { url: string; emphase: boolean }[]) {

@@ -8,7 +8,7 @@ export function create(data: IProperty) {
 }
 
 export function edit(data: IProperty, id: number | string) {
-  return http.put(`${controller}/${id}`, data)
+  return http.put(`${controller}/put/${id}`, data)
 }
 
 export function list(page = 1, limit = 10, search?: string) {

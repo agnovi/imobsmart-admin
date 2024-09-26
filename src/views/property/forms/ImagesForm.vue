@@ -79,6 +79,7 @@ async function handleAddImage(event: Event) {
               @change="handleEmphase(idx)"
             />
             <button
+              type="button"
               class="text-white text-sm underline flex items-center gap-2 mt-2"
               @click="handleRemoveImage(image)"
             >
