@@ -26,6 +26,7 @@
     "quill-image-resize": "^3.0.9",
     "sortablejs-vue3": "^1.2.11",
     "sweetalert2": "^11.11.0",
+    "v-money3": "^3.24.1",
     "vee-validate": "^4.11.8",
     "vue": "^3.3.4",
     "vue-easy-lightbox": "^1.19.0",

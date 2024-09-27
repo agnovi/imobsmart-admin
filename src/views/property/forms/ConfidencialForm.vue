@@ -11,7 +11,7 @@ const confidencial = defineModel<IConfidencial>({
     <h4 class="text-xl font-semibold text-gray-700 mb-4">Informações Confidenciais</h4>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <base-input v-model="confidencial.name" label="Nome do Proprietário" />
-      <base-input v-model="confidencial.email" label="Email do Proprietário" />
+      <base-input v-model="confidencial.email" label="Email do Proprietário" rules="email" />
       <base-input
         v-model="confidencial.cell_phone"
         mask="(##) #####-####"

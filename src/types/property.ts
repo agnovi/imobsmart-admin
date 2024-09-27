@@ -3,11 +3,14 @@ export interface IProperty {
   anuncia?: any;
   residential_type?: string;
   commercial_type?: string;
+  citys?: string;
+  neighborhoods?: string;
   title?: string;
   address?: string;
   useful_area?: number;
   dormitory_number?: number;
   vacancies?: number;
+  suites?: number;
   bathroom?: number;
   accepts_pets?: boolean;
   description?: string;

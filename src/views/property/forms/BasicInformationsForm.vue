@@ -16,8 +16,16 @@ const data = defineModel<IProperty>({
         <base-select v-model="data.residential_type" :options="residentialOptions" />
       </base-input>
       <base-input v-model="data.address" label="Endereço" />
+      <base-input v-model="data.citys" label="Cidade" />
+      <base-input v-model="data.neighborhoods" label="Bairro" />
       <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         <base-input v-model="data.useful_area" label="Área Útil (m²)" min="0" type="number" />
+        <base-input
+          v-model="data.suites"
+          label="Número de Suites"
+          type="number"
+          min="0"
+        />
         <base-input
           v-model="data.dormitory_number"
           label="Número de Dormitórios"
@@ -43,13 +51,14 @@ const data = defineModel<IProperty>({
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <base-input
         v-model="data.condominium_value"
+        is-money
         label="Valor do Condomínio"
         min="0"
         type="number"
       />
-      <base-input v-model="data.IPTU_value" label="Valor do IPTU" min="0" type="number" />
-      <base-input v-model="data.square_meter_sale" label="Valor por m²" min="0" type="number" />
-      <base-input v-model="data.sale_value" label="Valor de Venda" min="0" />
+      <base-input v-model="data.IPTU_value" is-money label="Valor do IPTU" min="0" type="number" />
+      <base-input v-model="data.square_meter_sale" is-money label="Valor por m²" min="0" type="number" />
+      <base-input v-model="data.sale_value" is-money label="Valor de Venda" min="0" />
       <base-input v-model="data.location" label="Localização" min="0" />
     </div>
   </section>

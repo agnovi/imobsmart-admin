@@ -31,7 +31,18 @@
           </slot>
         </div>
         <slot v-bind="field">
+          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model="value" v-bind="config" :class="[
+              disabled
+                ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
+                : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
+              {
+                'border-[#d2d3d4]': !errorMessage && !isSlot,
+                'border-red-500': !!errorMessage
+              }
+            ]" />
+
           <input
+            v-else
             :id="props.id || props.name"
             :aria-label="props.name"
             v-maska
@@ -42,10 +53,11 @@
             :class="[
               disabled
                 ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
-                : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]', {
-                  'border-[#d2d3d4]' : !errorMessage && !isSlot,
-                  'border-red-500': !!errorMessage,
-                }
+                : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
+              {
+                'border-[#d2d3d4]': !errorMessage && !isSlot,
+                'border-red-500': !!errorMessage
+              }
             ]"
             :disabled="disabled"
             :min="min"
@@ -74,9 +86,9 @@
 </template>
 <script lang="ts" setup>
 import { vMaska } from 'maska'
+import { Money3Component } from 'v-money3'
 import { Field, defineRule } from 'vee-validate'
 import LSpinner from './Spinner.vue'
-
 import * as validations from '../util/validators'
 import { computed } from 'vue'
 
@@ -106,6 +118,7 @@ interface IProps {
   padding?: string
   rules?: string
   loading?: boolean
+  isMoney?: boolean
   disabled?: boolean
   noPaddingPX?: boolean
   isSlot?: boolean
@@ -120,8 +133,24 @@ interface MaskaDetail {
   unmasked: string
   completed: boolean
 }
-
 const emit = defineEmits(['maskaComplete', 'blur'])
+
+const config = {
+  masked: false,
+  prefix: 'R$',
+  suffix: '',
+  thousands: ',',
+  decimal: '.',
+  precision: 2,
+  disableNegative: false,
+  disabled: false,
+  min: 0,
+  max: 0,
+  allowBlank: false,
+  minimumNumberOfCharacters: 0,
+  shouldRound: true,
+  focusOnRight: false
+}
 
 const value = defineModel<any>()
 

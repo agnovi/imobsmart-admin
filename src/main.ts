@@ -7,7 +7,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createPinia } from 'pinia'
 import { vMaska } from 'maska'
 import VueEasyLightbox from 'vue-easy-lightbox'
-
+import money from 'v-money3'
 import DashboardPlugin from './plugins/globalComponents'
 import vSelect from 'vue-select'
 import {
@@ -50,7 +50,7 @@ app.use(pinia)
 app.use(VueEasyLightbox)
 app.use(DashboardPlugin)
 app.use(Toast)
-
+app.use(money)
 app.directive('maska', vMaska)
 app.use(FloatingVue, { container: '#app' })
 app.component('DefaultLayout', DashboardLayout)

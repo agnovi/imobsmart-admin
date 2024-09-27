@@ -11,10 +11,10 @@ const mainData = defineModel<IDadosprim>({
     <h4 class="text-xl font-semibold text-gray-700 mb-4">Informações Principais</h4>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <base-input v-model="mainData.reference" label="Referência" />
-      <base-input v-model="mainData.sale" label="Oferta" />
-      <base-input v-model="mainData.sale_valuation" label="Valor na Avaliação de venda" />
-      <base-input v-model="mainData.rental_evaluation" label="Valor Aluguel" />
-      <base-input v-model="mainData.condominium" label="Valor Condominio" />
+      <base-input v-model="mainData.sale" is-money label="Oferta" />
+      <base-input v-model="mainData.sale_valuation" is-money label="Valor na Avaliação de venda" />
+      <base-input v-model="mainData.rental_evaluation" is-money label="Valor Aluguel" />
+      <base-input v-model="mainData.condominium" is-money label="Valor Condominio" />
       <base-input label="&nbsp;">
         <base-checkbox v-model="mainData.leased" label="Área de Lazer" />
       </base-input>
