@@ -31,7 +31,7 @@
           </slot>
         </div>
         <slot v-bind="field">
-          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model="value" v-bind="config" :class="[
+          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model.number="value" v-bind="config" :class="[
               disabled
                 ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
                 : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
