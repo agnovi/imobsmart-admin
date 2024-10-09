@@ -16,9 +16,7 @@ export function listUser(page = 1, limit = 10, where?: any) {
   } else {
     search = where
   }
-  return http.get(
-    `${controller}?page=${page}&limit=${limit}${search ? `&name=${search}` : ''}`
-  )
+  return http.get(`${controller}?page=${page}&limit=${limit}${search ? `&search=${search}` : ''}`)
 }
 
 export function getUser(id: any) {
@@ -33,10 +31,6 @@ export function deleteUser(id: number) {
   return http.delete(`${controller}/${id}`)
 }
 
-
 export function resetPassword(id: any, data: any) {
   return http.put(`${controller}/password/${id}`, data)
 }
-
-
-

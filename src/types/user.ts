@@ -1,21 +1,19 @@
 export interface IUser {
   id?: string | number
-  authenticated?: boolean
-  name_lastname?: string;
-  sex?: string;
-  email?: string;
-  nickname?: string;
-  education?: string;
-  password?: string;
-  nationality?: string;
-  naturality?: string;
-  real_estate_experience?: number;
-  hobbies?: string;
-  telephone?: string;
-  cellphone?: string;
-  cpf?: string;
-  cnpj?: string;
-  hobbie?: string;
-  status?: string;
-  rg?: string;
+  name: string
+  email: string
+  cpf: string
+  password: string
+  status: boolean
+}
+
+export interface IClients {
+  id_client?: string | number
+  name: string
+  email: string
+  document: string
+  password: string
+  phone?: string
+  status: string
+  type: string
 }

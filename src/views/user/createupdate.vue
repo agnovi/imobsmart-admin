@@ -5,31 +5,38 @@ import { useToast } from 'vue-toastification'
 import { Form } from 'vee-validate'
 import * as UserServices from '@/api/services/User'
 import FullSpinner from '@/components/FullSpinner.vue'
-import { customFilter } from '@/util/helpers'
 import useAuth from '@/composables/useSession'
 import CardForm from '@/components/CardForm.vue'
 import ISave from '@/components/icones/ISave.vue'
 
-import type { IUser } from '@/types/user'
+import type { IClients } from '@/types/user'
+import Select from '@/components/Select.vue'
+import { http } from '@/api/api'
 const { token } = useAuth()
 const toast = useToast()
 const router = useRouter()
 const route = useRoute()
-const statusOtions = ref<any[]>([
-  { id: 'ACTIVE', text: 'Ativo' },
-  { id: 'INACTIVE', text: 'Inativo' },
-  { id: 'PRE_REGISTER', text: 'Pré registrado' }
+const status = ref([
+  { label: 'ATIVO', value: 'ATIVO' }, {
+    label: "INATIVO", value: 'INATIVO'
+  }
 ])
-const sexOptions = [
-  { label: 'Masculino', value: 'MALE' },
-  { label: 'Feminino', value: 'FEMALE' }
-]
-const user = ref<IUser>({})
+
+const type = ref([
+  { label: 'Pessoa Física', value: 'PF' }, {
+    label: "Pessoa Juridíca", value: 'PJ'
+  }
+])
+const user = ref<IClients>({
+  status: 'ATIVO',
+  type: 'PF'
+} as IClients)
 const loading = ref(false)
 const loadingSave = ref(false)
 
 async function getUser() {
   const res = await UserServices.getUser(String(route.params.id))
+  console.log(res)
   user.value = { ...res.data }
 }
 
@@ -40,33 +47,30 @@ onMounted(() => {
 })
 
 async function handleSubmit() {
-  const body: IUser = {
-    name_lastname: user.value.name_lastname,
-    cpf: user.value?.cpf?.replace(/\D/g, ''),
-    cellphone: user.value?.cellphone?.replace(/\D/g, ''),
-    sex: user.value.sex,
+  loading.value = true
+  const userPayload = {
+    name: user.value.name,
     email: user.value.email,
-    telephone: user.value?.telephone?.replace(/\D/g, ''),
-    cnpj: user.value?.cnpj?.replace(/\D/g, ''),
-    rg: user.value.rg,
-    hobbie: user.value.hobbie,
-    nickname: user.value.nickname,
-    password: user.value.password,
-    education: user.value.education
+    document: user.value.document,
+    status: user.value.status,
+    phone: user.value.phone,
+    type: user.value.type
+
   }
-  loadingSave.value = true
+
   try {
-    if (!user.value.id) {
-      await UserServices.createUser(body)
+    if (route.params.id) {
+      await http.patch(`clients/${route.params.id}`, userPayload)
+      toast.success('Usuário atualizado com sucesso')
     } else {
-      delete body.password
-      await UserServices.editUser({ ...body, id: user.value.id })
+      await http.post('clients', { ...userPayload, password: user.value.password })
+      toast.success('Usuário criado com sucesso')
     }
-    toast.success(`Usuário ${!user.value.id ? 'criado' : 'editado'} com sucesso!`)
+    router.back()
   } catch (error) {
-    console.error('Erro ao salvar o usuário:', error)
+    loading.value = false
   } finally {
-    loadingSave.value = false
+    loading.value = false
   }
 }
 </script>
@@ -85,59 +89,25 @@ async function handleSubmit() {
     <CardForm>
       <template #content>
         <Form @submit="handleSubmit">
-          <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-            <base-input
-              v-model="user.name_lastname"
-              type="text"
-              label="Nome Completo"
-              rules="required|validateNameAndSurname"
-            />
-            <base-input
-              v-model="user.cpf"
-              type="text"
-              label="CPF"
-              rules="required|cpf"
-              mask="###.###.###-##"
-            />
-            <base-input v-model="user.rg" type="text" label="RG" mask="##.###.###-#" />
-            <base-input
-              v-model="user.cnpj"
-              type="text"
-              label="CNPJ"
-              rules="cnpj"
-              mask="##.###.###/####-##"
-            />
-            <base-input v-model="user.sex" label="Sexo" is-slot>
-              <base-select v-model="user.sex" :options="sexOptions" />
-            </base-input>
-            <base-input
-              v-model="user.cellphone"
-              type="text"
-              label="Telefone"
-              mask="(##) #####-####"
-            />
-            <base-input v-model="user.email" type="email" label="E-mail" rules="email" />
-            <base-input v-model="user.education" label="Escolaridade" />
-            <base-input v-model="user.nickname" label="Nick name" />
-            <base-input v-if="!user.id" v-model="user.password" label="Senha" />
-            <!-- <base-input is-slot label="Status">
-              <v-select
-                class="w-full"
-                v-model="user.status"
-                :options="statusOtions"
-                label="text"
-                value="id"
-                :filter="customFilter"
-              />
-            </base-input> -->
+          <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
+            <base-input v-model="user.name" type="text" label="Nome Completo" rules="required" />
+            <Select label="Tipo" :options="type" v-model="user.type" />
+            <Select label="Status" :options="status" v-model="user.status" />
           </div>
-          <div class="flex justify-end mt-8">
-            <base-button
-              type="submit"
-              :disabled="loadingSave"
-              :loading="loadingSave"
-              class="mt-20 max-w-fit"
-            >
+          <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+
+            <base-input v-if="user.type === 'PF'" v-model="user.document" type="text" label="CPF" rules="required|cpf"
+              mask="###.###.###-##" />
+            <base-input v-if="user.type === 'PJ'" v-model="user.document" type="text" label="CNPJ" rules="required|cnpj"
+              mask="##.###.###/####-##" />
+            <base-input v-model="user.email" label="E-mail" rules="required|email" />
+            <base-input v-model="user.phone" label="Telefone" mask="(##) #####-####" rules="required" />
+
+            <base-input v-if="!user.id_client" v-model="user.password" label="Senha" rules="required" />
+
+          </div>
+          <div class="flex justify-end">
+            <base-button type="submit" :disabled="loadingSave" :loading="loadingSave" class="mt-10 max-w-fit">
               <ISave />
 
               Salvar Alterações
