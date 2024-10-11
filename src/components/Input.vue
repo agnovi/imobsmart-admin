@@ -139,8 +139,8 @@ const config = {
   masked: false,
   prefix: 'R$',
   suffix: '',
-  thousands: ',',
-  decimal: '.',
+  thousands: '.',
+  decimal: ',',
   precision: 2,
   disableNegative: false,
   disabled: false,
@@ -178,4 +178,3 @@ input:disabled {
   background-color: #d4d4d4;
 }
 </style>
-./Spinner.vue
