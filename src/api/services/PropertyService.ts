@@ -8,12 +8,12 @@ export function create(data: IProperty) {
 }
 
 export function edit(data: IProperty, id: number | string) {
-  return http.put(`${controller}/put/${id}`, data)
+  return http.patch(`${controller}/${id}`, data)
 }
 
 export function list(page = 1, limit = 10, search?: string) {
 
-  return http.get(`${controller}/all?page=${page}&limit=${limit}${search ? `&search=${search}` : ''}`)
+  return http.get(`${controller}?page=${page}&limit=${limit}${search ? `&search=${search}` : ''}`)
 }
 export function AllCompany() {
   return http.get(`${controller}`)

@@ -1,23 +1,56 @@
 <script lang="ts" setup>
-import { residentialOptions } from '@/util/constants'
+import { ref, onMounted } from 'vue'
+import { http } from '@/api/api'
 
 import type { IProperty } from '@/types/property'
 const data = defineModel<IProperty>({
   required: true,
   default: {}
 })
+
+const typesOptions = ref([])
+const typesNegotiation = ref([
+  { label: 'Venda', value: 'venda' },
+  { label: 'Aluguel', value: 'locacao' }
+])
+
+async function getTypesProperty() {
+  try {
+    const res = await http.get('property/types')
+    typesOptions.value = res.data?.rows?.map((c: any) => {
+      return {
+        label: c.name,
+        value: c.id_propertys_type
+      }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(() => {
+  getTypesProperty()
+})
 </script>
+
 <template>
   <section>
     <h4 class="text-xl font-semibold text-gray-700 mb-4">Informações Básicas</h4>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <base-input v-model="data.title" label="Título do Imóvel" />
-      <base-input v-model="data.residential_type" label="Tipo do imóvel" is-slot>
-        <base-select v-model="data.residential_type" :options="residentialOptions" />
-      </base-input>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <base-input v-model="data.id_type" label="Tipo do imóvel" is-slot>
+          <base-select v-model="data.id_type" :options="typesOptions" />
+        </base-input>
+        <base-input v-model="data.negotiation" label="Tipo de negociação" is-slot>
+          <base-select v-model="data.negotiation" :options="typesNegotiation" />
+        </base-input>
+      </div>
       <base-input v-model="data.address" label="Endereço" />
-      <base-input v-model="data.citys" label="Cidade" />
-      <base-input v-model="data.neighborhoods" label="Bairro" />
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <base-input v-model="data.neighborhoods" label="Bairro" />
+        <base-input v-model="data.citys" label="Cidade" />
+      </div>
       <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         <base-input v-model="data.useful_area" label="Área Útil (m²)" min="0" type="number" />
         <base-input
@@ -33,15 +66,15 @@ const data = defineModel<IProperty>({
           min="0"
         />
         <base-input v-model="data.vacancies" label="Número de Vagas" min="0" type="number" />
-        <base-input v-model="data.bathroom" label="Número de Banheiros" min="0" type="number" />
-        <base-input label="&nbsp;">
+        <!-- <base-input v-model="data.bathroom" label="Número de Banheiros" min="0" type="number" /> -->
+        <!-- <base-input label="&nbsp;">
           <base-checkbox v-model="data.accepts_pets" label="Aceita Pets?" />
-        </base-input>
+        </base-input> -->
       </div>
     </div>
 
-    <base-input label="Descrição" is-slot>
-      <base-textarea v-model="data.description" class="w-full" />
+    <base-input label="Descrição" class="mt-5">
+     <base-editor v-model="data.description" class="w-full" />
     </base-input>
   </section>
 
@@ -49,17 +82,17 @@ const data = defineModel<IProperty>({
   <section class="mt-6">
     <h4 class="text-xl font-semibold text-gray-700 mb-4">Informações Financeiras</h4>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-      <base-input
+      <!-- <base-input
         v-model="data.condominium_value"
         is-money
         label="Valor do Condomínio"
         min="0"
         type="number"
-      />
-      <base-input v-model="data.IPTU_value" is-money label="Valor do IPTU" min="0" type="number" />
-      <base-input v-model="data.square_meter_sale" is-money label="Valor por m²" min="0" type="number" />
+      /> -->
+      <!-- <base-input v-model="data.IPTU_value" is-money label="Valor do IPTU" min="0" type="number" /> -->
+      <!-- <base-input v-model="data.square_meter_sale" is-money label="Valor por m²" min="0" type="number" /> -->
       <base-input v-model="data.sale_value" is-money label="Valor de Venda" min="0" />
-      <base-input v-model="data.location" label="Localização" min="0" />
+      <!-- <base-input v-model="data.location" label="Localização" min="0" /> -->
     </div>
   </section>
 </template>

@@ -66,7 +66,7 @@ async function listItems() {
       pagination.limit,
       search.value
     )
-    const newArray = res.data?.data?.items.map((i: any) => {
+    const newArray = res.data?.rows?.map((i: any) => {
       return { ...i, cnpj: formatCNPJ(i.cnpj) }
     })
     pagination.total = res.data.pagination.totalQuantity
@@ -101,7 +101,7 @@ async function deleteItem(item: any) {
 }
 
 async function editItem(item: any) {
-  router.push(`/editar-imovel/${item.id}`)
+  router.push(`/editar-imovel/${item.id_property}`)
 }
 function handleSearch(event: any) {
   search.value = event

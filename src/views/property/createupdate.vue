@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useRoute, useRouter } from 'vue-router'
 import useAuth from '@/composables/useSession'
-import type { IConfidencial, IProperty, IDadosprim, IDetails, IAnuncio } from '@/types/property'
+import type { IConfidencial, IProperty, IDadosprim, IDetails, IAnuncio, PropertysImage } from '@/types/property'
 import BasicInformations from './forms/BasicInformationsForm.vue'
 import MainInformations from './forms/MainInformationsForm.vue'
 import Details from './forms/DetailsForm.vue'
@@ -129,7 +129,7 @@ const mock = {
   },
   dormitory_number: 2,
   image_detach: '',
-  images: [
+  propertys_images: [
     {
       url: 'https://system.soprojetos.com.br/files/1491/project_page_e/PAD-COD43-FOTO-1-WEB.jpg?1659015535',
       id: 12
@@ -159,10 +159,10 @@ const details = ref<IDetails>({})
 const basicInfo = ref<IProperty>({})
 const tabList = [
   'Informações Básicas',
-  'Informações Principais',
-  'Detalhes',
-  'Anuncio',
-  'Confidêncial',
+  // 'Informações Principais',
+  // 'Detalhes',
+  // 'Anuncio',
+  // 'Confidêncial',
   'Imagens'
 ]
 
@@ -174,26 +174,31 @@ async function onSubmit() {
   try {
     const body: IProperty = {
       ...basicInfo.value,
+      images: basicInfo.value?.propertys_images?.map(img => {
+        return { url: img!.url, emphase: img.emphase ? 1 : 0 }
+      }) || [],
     }
 
-    if(Object.keys(details.value).length > 0)
-      body.details = details.value
-    if(Object.keys(anuncio.value).length > 0)
-      body.anuncio = { ...anuncio.value, placement_date: anuncio.value?.placement_date?.split('T')[0], withdrawal_date: anuncio.value?.withdrawal_date?.split('T')[0] }
-    if(Object.keys(confidencial.value).length > 0)
-      body.confidencial = confidencial.value
-    if(Object.keys(mainInfo.value).length > 0)
-      body.dadosprim = mainInfo.value
+    delete body.propertys_images
+
+    // if(Object.keys(details.value).length > 0)
+    //   body.details = details.value
+    // if(Object.keys(anuncio.value).length > 0)
+    //   body.anuncio = { ...anuncio.value, placement_date: anuncio.value?.placement_date?.split('T')[0], withdrawal_date: anuncio.value?.withdrawal_date?.split('T')[0] }
+    // if(Object.keys(confidencial.value).length > 0)
+    //   body.confidencial = confidencial.value
+    // if(Object.keys(mainInfo.value).length > 0)
+    //   body.dadosprim = mainInfo.value
 
     const bodySemNull = removeNullFields(body)
 
-    if (!basicInfo.value.id) {
+    if (!basicInfo.value.id_property) {
       await PropertyServices.create(bodySemNull)
     } else {
-      await PropertyServices.edit(bodySemNull, basicInfo.value.id)
+      await PropertyServices.edit(bodySemNull, basicInfo.value.id_property)
     }
 
-    toast.success(`Imóvel ${!basicInfo.value.id ? 'cadastrado' : 'editado'} com sucesso!`)
+    toast.success(`Imóvel ${!basicInfo.value.id_property ? 'cadastrado' : 'editado'} com sucesso!`)
     router.push('/imoveis')
   } catch (error) {
     console.error('Erro ao salvar o imóvel:', error)
@@ -204,26 +209,26 @@ async function onSubmit() {
 
 async function load() {
   const res = await PropertyServices.getById(String(route.params.id))
-  basicInfo.value = { ...res.data.data }
-  mainInfo.value = { ...res.data.data.dadosprim[0] }
-  details.value = { ...res.data.data.details[0] }
-  anuncio.value = { ...res.data.data.anuncia[0] }
-  confidencial.value = { ...res.data.data.confidencial[0] }
+  basicInfo.value = { ...res.data }
+  // mainInfo.value = { ...res.data.data.dadosprim[0] }
+  // details.value = { ...res.data.data.details[0] }
+  // anuncio.value = { ...res.data.data.anuncia[0] }
+  // confidencial.value = { ...res.data.data.confidencial[0] }
 
   
-  if (basicInfo.value.anuncia) delete basicInfo.value.anuncia
+  // if (basicInfo.value.anuncia) delete basicInfo.value.anuncia
   
-  delete basicInfo.value.dadosprim
-  delete basicInfo.value.details
-  delete basicInfo.value.anuncio
-  delete basicInfo.value.confidencial
+  // delete basicInfo.value.dadosprim
+  // delete basicInfo.value.details
+  // delete basicInfo.value.anuncio
+  // delete basicInfo.value.confidencial
 
-  if(!Array.isArray(basicInfo.value?.images))
-    basicInfo.value.images = []
+  if(!Array.isArray(basicInfo.value?.propertys_images))
+    basicInfo.value.propertys_images = []
 }
 
-function handleUpdateListImages(imgItems: { url: string; emphase: boolean }[]) {
-  basicInfo.value.images = imgItems
+function handleUpdateListImages(imgItems: PropertysImage[]) {
+  basicInfo.value.propertys_images = imgItems
 }
 
 onMounted(() => {
@@ -271,7 +276,7 @@ onMounted(() => {
           <ImagesForm
             v-if="activeTab === 'Imagens'"
             ref="imageForm"
-            :images="basicInfo.images"
+            :images="basicInfo.propertys_images"
             @updateImageList="handleUpdateListImages"
           />
         </template>

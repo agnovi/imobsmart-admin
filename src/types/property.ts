@@ -1,32 +1,40 @@
 export interface IProperty {
-  id?: string | number;
-  anuncia?: any;
-  residential_type?: string;
-  commercial_type?: string;
-  citys?: string;
-  neighborhoods?: string;
-  title?: string;
-  address?: string;
-  useful_area?: number;
-  dormitory_number?: number;
-  vacancies?: number;
-  suites?: number;
-  bathroom?: number;
-  accepts_pets?: boolean;
-  description?: string;
-  condominium_value?: number;
-  IPTU_value?: number;
-  location?: string;
-  square_meter_sale?: number;
-  sale_value?: number;
-  images?: { url: string, emphase?: boolean }[];
-  image_detach?: string;
-  id_cond_ed?: number;
-  details?: IDetails;
-  dadosprim?: IDadosprim;
-  anuncio?: IAnuncio;
-  confidencial?: IConfidencial;
+  id_property?: number
+  title?: string
+  cod_unique?: string
+  id_type?: number
+  citys?: string
+  negotiation?: TipoOperacao
+  neighborhoods?: string
+  useful_area?: number
+  address?: string
+  sale_value?: any
+  dormitory_number?: number
+  vacancies?: number
+  suites?: number
+  name_table?: string
+  link_table?: string
+  description?: string
+  deleted_at?: any
+  created_at?: string
+  updated_at?: string
+  propertys_images?: PropertysImage[]
+  images?: PropertysImage[]
+  propertys_type?: PropertysType
 }
+
+export interface PropertysImage {
+  url?: string
+  emphase?: number
+  id_propertys_images?: number
+}
+
+export interface PropertysType {
+  id_propertys_type: number
+  name: string
+  propertys_type: string
+}
+
 export interface IConfidencial {
   reference?: string;
   name?: string;
@@ -132,3 +140,8 @@ export interface IDetails {
   services?: string;
   infrastructure?: string;
 }
+
+export enum TipoOperacao {
+  Venda = 'venda',
+  Locacao = 'locacao',
+} 

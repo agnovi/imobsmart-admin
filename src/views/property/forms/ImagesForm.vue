@@ -3,18 +3,15 @@ import { ref } from 'vue'
 import TrashIcon from '@/components/icones/Trash.vue'
 import PlusImage from '@/components/icones/PlusImage.vue'
 import { importImage } from '@/api/services/ImportImage'
-const props = withDefaults(
-  defineProps<{
-    images?: { emphase?: boolean; url?: string }[]
-  }>(),
-  {
-    images: []
-  }
-)
+import type { PropertysImage } from '@/types/property'
+
+const props = defineProps<{
+  images?: PropertysImage[]
+}>()
 
 const emit = defineEmits(['addImage', 'removeImage', 'updateImageList'])
 
-const itemsImages = ref<any>(props.images)
+const itemsImages = ref<any>(props.images || [])
 const loadingSaveImage = ref(false)
 const inputFile = ref<HTMLInputElement | null>(null)
 
