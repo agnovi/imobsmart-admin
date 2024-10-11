@@ -1,30 +1,19 @@
 <template>
-  <div class="w-full relative mt-6">
-    <Field
-      v-slot="{ field, errorMessage }"
-      v-model="value"
-      :name="name ? name : `${cryptoName}-${name}`"
-      :rules="rules"
-    >
-      <label
-        v-if="label"
-        :for="props.id || props.name"
-        :class="`${!!errorMessage ? 'text-red-700' : 'text-gray-700'} text-[14px] mb-1 block`"
-        >{{ label }}</label
-      >
-      <div
-        class="relative w-full flex items-center transition-all"
-        :class="[
-          ` ${disabled ? 'bg-gray-100' : ''} ${padding ? padding : noPaddingPX ? 'px-0' : !isSlot ? 'px-0' : 'px-0'} rounded-[8px]`,
-          {
-            'bg-red-50': !!errorMessage,
-            'bg-gray-50': !errorMessage && !isSlot && $route.meta.external,
-            'border-red-500': !!errorMessage,
-            wrapper: (!errorMessage && !isSlot) || $route.meta.external,
-            'border border-[#d2d3d4]': isSlot
-          }
-        ]"
-      >
+  <div class="w-full relative ">
+    <Field v-slot="{ field, errorMessage }" v-model="value" :name="name ? name : `${cryptoName}-${name}`"
+      :rules="rules">
+      <label v-if="label" :for="props.id || props.name"
+        :class="`${!!errorMessage ? 'text-red-700' : 'text-gray-700'} text-[14px] mb-1 block`">{{ label }}</label>
+      <div class="relative w-full flex items-center transition-all" :class="[
+        ` ${disabled ? 'bg-gray-100' : ''} ${padding ? padding : noPaddingPX ? 'px-0' : !isSlot ? 'px-0' : 'px-0'} rounded-[8px]`,
+        {
+          'bg-red-50': !!errorMessage,
+          'bg-gray-50': !errorMessage && !isSlot && $route.meta.external,
+          'border-red-500': !!errorMessage,
+          wrapper: (!errorMessage && !isSlot) || $route.meta.external,
+          'border border-[#d2d3d4]': isSlot
+        }
+      ]">
         <div v-if="prependIcon || $slots.prepend">
           <slot name="preppend" class="mr-[2px]">
             <i :class="prependIcon" class="text-gray-500 text-sm"></i>
@@ -32,25 +21,17 @@
         </div>
         <slot v-bind="field">
           <Money3Component v-if="isMoney" :id="props.id || props.name" v-model.number="value" v-bind="config" :class="[
-              disabled
-                ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
-                : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
-              {
-                'border-[#d2d3d4]': !errorMessage && !isSlot,
-                'border-red-500': !!errorMessage
-              }
-            ]" />
+            disabled
+              ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
+              : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
+            {
+              'border-[#d2d3d4]': !errorMessage && !isSlot,
+              'border-red-500': !!errorMessage
+            }
+          ]" />
 
-          <input
-            v-else
-            :id="props.id || props.name"
-            :aria-label="props.name"
-            v-maska
-            :data-maska="mask"
-            :type="type"
-            v-bind="field"
-            :placeholder="placeholder"
-            :class="[
+          <input v-else :id="props.id || props.name" :aria-label="props.name" v-maska :data-maska="mask" :type="type"
+            v-bind="field" :placeholder="placeholder" :class="[
               disabled
                 ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
                 : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
@@ -58,13 +39,7 @@
                 'border-[#d2d3d4]': !errorMessage && !isSlot,
                 'border-red-500': !!errorMessage
               }
-            ]"
-            :disabled="disabled"
-            :min="min"
-            :minLength="minLength"
-            @maska="onMaska"
-            @blur="emit('blur')"
-          />
+            ]" :disabled="disabled" :min="min" :minLength="minLength" @maska="onMaska" @blur="emit('blur')" />
         </slot>
         <div v-if="appendIcon || $slots.append">
           <slot name="append" class="mr-[2px]">

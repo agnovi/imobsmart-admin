@@ -33,9 +33,9 @@ const inactiveClassText = ref('text-[#6b7280]')
 const link = [
   { id: 1, title: 'Dashboard', path: '/dashboard' },
   // { id: 9, title: 'Importações', path: '/importacoes' },
-  { id: 7, title: 'Usuários', path: '/usuarios' },
+  { id: 7, title: 'Clientes', path: '/usuarios' },
   // { id: 16, title: 'Contatos', path: '/contatos' },
-  { id: 8, title: 'Usuários Admin', path: '/usuarios-admin' },
+  { id: 8, title: 'Usuários', path: '/usuarios-admin' },
   { id: 4, title: 'Imóveis', path: '/imoveis' },
   // { id: 5, title: 'Cargos', path: '/cargos' },
   // { id: 6, title: 'Setores', path: '/setores' },

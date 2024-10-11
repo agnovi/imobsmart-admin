@@ -24,12 +24,8 @@ const pagination = reactive({
 })
 const columns = ref([
   {
-    label: 'ID',
-    key: 'id'
-  },
-  {
     label: 'Nome',
-    key: 'name_lastname'
+    key: 'name'
   },
   {
     label: 'E-mail',
@@ -38,6 +34,11 @@ const columns = ref([
   {
     label: 'CPF',
     key: 'cpf',
+    custom: true
+  },
+  {
+    label: 'Status',
+    key: 'status',
     custom: true
   },
   {
@@ -77,9 +78,8 @@ async function listItems() {
   loading.value = true
   try {
     const res = await listUser(pagination.page, pagination.limit, search.value)
-
     pagination.total = res.data?.pagination?.totalQuantity
-    users.value = res.data?.data?.items
+    users.value = res.data?.rows
   } catch (error) {
     loading.value = false
   } finally {
@@ -92,38 +92,38 @@ function handleAdd() {
 }
 
 async function handleEditedit(item: any) {
-  router.push(`/editar-usuario-admin/${item.id}`)
+  router.push(`/editar-usuario-admin/${item.id_user}`)
 }
 
-async function exportItem() {
-  try {
-    const res = await httpImport.get(`user/export-details`, {
-      responseType: 'blob',
-      headers: { Authorization: `Bearer ${token.value}` }
-    })
-    const url = window.URL.createObjectURL(new Blob([res.data]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', 'usuarios.xlsx')
-    document.body.appendChild(link)
-    link.click()
-    window.URL.revokeObjectURL(url)
-  } catch (error: any) {
-    console.log(error)
-  }
-}
+// async function exportItem() {
+//   try {
+//     const res = await httpImport.get(`user/export-details`, {
+//       responseType: 'blob',
+//       headers: { Authorization: `Bearer ${token.value}` }
+//     })
+//     const url = window.URL.createObjectURL(new Blob([res.data]))
+//     const link = document.createElement('a')
+//     link.href = url
+//     link.setAttribute('download', 'usuarios.xlsx')
+//     document.body.appendChild(link)
+//     link.click()
+//     window.URL.revokeObjectURL(url)
+//   } catch (error: any) {
+//     console.log(error)
+//   }
+// }
 
 async function removeUser(item: any) {
   Swal.fire({
     title: '<strong>Atenção</strong>',
     icon: 'question',
-    html: `Deseja realmente deletar o usuário admin ${item.name_lastname}`,
+    html: `Deseja realmente deletar o usuário admin ${item.name}`,
     showCancelButton: true,
     confirmButtonText: 'Sim',
     cancelButtonText: `Não`
   }).then((result: any) => {
     if (result.isConfirmed) {
-      deleteUser(item.id).then((f: any) => {
+      deleteUser(item.id_user).then(() => {
         listItems()
         toast.success('Usuario excluido com sucesso!')
       })
@@ -134,38 +134,18 @@ async function removeUser(item: any) {
 
 <template>
   <div>
-    <h3 class="text-3xl font-medium text-gray-700">Usuários admin</h3>
-    <Table
-      :loading="loading"
-      :columns="columns"
-      :rows="users"
-      :total-page="pagination.total"
-      :current-page="pagination.page"
-      :items-per-page="pagination.limit"
-      :filter-default="true"
-      @edit-item="handleEditedit"
-      @delete-item="removeUser"
-      @remove-search="search = ''"
-      @changePerPage="pagination.limit = $event"
-      @changePage="pagination.page = $event"
-      @search="search = $event"
-    >
+    <h3 class="text-3xl font-medium text-gray-700">Usuários</h3>
+    <Table :loading="loading" :columns="columns" :rows="users" :total-page="pagination.total"
+      :current-page="pagination.page" :items-per-page="pagination.limit" :filter-default="true"
+      @edit-item="handleEditedit" @delete-item="removeUser" @remove-search="search = ''"
+      @changePerPage="pagination.limit = $event" @changePage="pagination.page = $event" @search="search = $event">
       <template #BtnTable>
         <div class="flex justify-end">
-          <button type="button" class="btn-import mss-2 mr-2 whitespace-nowrap" @click="exportItem">
+          <!-- <button type="button" class="btn-import mss-2 mr-2 whitespace-nowrap" @click="exportItem">
             <div class="flex gap-1 items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#354052"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-download"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="#354052" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-download">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
                 <path d="M7 11l5 5l5 -5" />
@@ -174,60 +154,40 @@ async function removeUser(item: any) {
               <span> Exportar usuários </span>
             </div>
           </button>
-          <button
-            class="btn-import mss-2 whitespace-nowrap"
-            @click="router.push('importar-usuarios')"
-          >
+          <button class="btn-import mss-2 whitespace-nowrap" @click="router.push('importar-usuarios')">
             <div class="flex">
               <span class="mx-2 mt-1">
                 <IImport />
               </span>
               <span> Importar usuários </span>
             </div>
-          </button>
-          <button class="btn-primary mx-2" @click="handleAdd">Adicionar usuárioss</button>
+          </button> -->
+          <button class="btn-primary mx-2" @click="handleAdd">Adicionar usuários</button>
         </div>
       </template>
       <template #cpf="{ row }">
         <p>{{ formatCPF(row.cpf) }}</p>
       </template>
       <template #status="{ row }">
-        <div
-          v-if="row.status === 'ACTIVE'"
-          class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1"
-        >
+        <div v-if="row.status === 'ATIVO'" class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1">
           <span>Ativo</span>
         </div>
-        <div
-          v-else-if="row.status === 'PENDING'"
-          class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1"
-        >
+        <!-- <div v-else-if="row.status === 'PENDING'" class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
           <span>Pendente</span>
-        </div>
-        <div
-          v-else-if="row.status === 'INACTIVE'"
-          class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1"
-        >
+        </div> -->
+        <div v-else-if="row.status === 'INACTIVE'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
           <span>Inativo</span>
         </div>
-        <div
-          v-else-if="row.status === 'DELETED'"
-          class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1"
-        >
+        <!-- <div v-else-if="row.status === 'DELETED'" class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
           <span>Deletado</span>
-        </div>
-        <div
-          v-else-if="row.status === 'BLOCKED'"
-          class="text-[#EF4444] text-center bg-[#FED7D7] rounded-full py-1"
-        >
+        </div> -->
+        <!-- <div v-else-if="row.status === 'BLOCKED'" class="text-[#EF4444] text-center bg-[#FED7D7] rounded-full py-1">
           <span>Bloqueado</span>
-        </div>
-        <div
-          v-else-if="row.status === 'PRE_REGISTER'"
-          class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1"
-        >
+        </div> -->
+        <!-- <div v-else-if="row.status === 'PRE_REGISTER'"
+          class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
           <span>Pré-registrado</span>
-        </div>
+        </div> -->
       </template>
     </Table>
   </div>

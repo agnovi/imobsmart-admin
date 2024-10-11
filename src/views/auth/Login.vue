@@ -16,6 +16,7 @@ async function login() {
   try {
     loading.value = true
     const res = await useSession.login({ email: email.value, password: password.value })
+    console.log(res)
     if (res.error) {
       toast.error('Erro ao efetar login!')
     } else {
@@ -33,8 +34,8 @@ async function login() {
 <template>
   <div class="bg-gray-200 min-h-screen">
     <div class="bg-[#2a382a] flex justify-center items-center h-[300px]">
-        <div><img src="/logo.png" alt="banner" class="" /></div>
-      </div>
+      <div><img src="/logo.png" alt="banner" class="" /></div>
+    </div>
     <div class="flex items-center justify-center px-6 area-login">
       <div class="w-full max-w-sm p-6 bg-white rounded-md shadow-md">
         <h1 class="text-center mt-4 text-[#4F46E5] font-700 text-[24px]">Fazer Login</h1>
@@ -56,7 +57,7 @@ async function login() {
               <spinner v-if="loading" />
               <span v-else>Entrar</span>
             </button>
-          </div>        
+          </div>
         </Form>
       </div>
     </div>
@@ -69,8 +70,10 @@ async function login() {
 .area-login {
   margin-top: -60px;
 }
+
 @media (max-width: 768px) {
   .area-login {
-  margin-top: -30px;
-}}
+    margin-top: -30px;
+  }
+}
 </style>

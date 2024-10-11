@@ -3,7 +3,7 @@ import { http } from '../api'
 import { httpImport } from '../api'
 import { isCPF } from '@/util/helpers'
 
-const controller = 'Clients'
+const controller = 'clients'
 
 export function createUser(data: any) {
   return http.post(`${controller}`, data)
@@ -17,13 +17,11 @@ export function listUser(page = 1, limit = 10, where?: any) {
   } else {
     search = where
   }
-  return http.get(
-    `${controller}?page=${page}&limit=${limit}${search ? `&name=${search}` : ''}`
-  )
+  return http.get(`${controller}?page=${page}&limit=${limit}${search ? `&search=${search}` : ''}`)
 }
 
 export function listUserWithoutPagination(name?: string) {
-  return http.get(`${controller}${name ? `?name=${name}` : ''}`)
+  return http.get(`${controller}${name ? `?search=${name}` : ''}`)
 }
 
 export function deleteUser(id: number) {

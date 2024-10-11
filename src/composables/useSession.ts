@@ -3,17 +3,16 @@ import * as authService from '@/api/services/AuthService'
 import { IUser } from '@/types/user'
 import router from '@/router'
 
-const userState = useStorage('user', { id: '' } as IUser)
+const userState = useStorage('user', { id: '' } as any)
 const token = useStorage('token', '')
 
 export default () => {
   function login(user: Pick<IUser, 'email' | 'password'>) {
     return authService.login({ email: user.email, password: user.password }).then((res) => {
-      if (res.data.body
-        .access_token) {
-        userState.value = { ...res.data.body }
-        token.value = res.data.body.access_token
-        return res.data.body
+      if (res.data.access_token) {
+        userState.value = { ...res.data }
+        token.value = res.data.access_token
+        return res.data
       } else {
         return { error: true, response: res.data }
       }

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import useAuth from '@/composables/useSession'
 
 import Dashboard from './views/Dashboard.vue'
+import { userAdmin } from './routes/userAdmin'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,30 +25,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./views/auth/redefine-password.vue'),
     meta: { layout: 'empty' }
   },
-  {
-    path: '/usuarios-admin',
-    name: 'UsersAdmin',
-    component: () => import('./views/userAdmin/list.vue'),
-    meta: {
-      auth: true
-    }
-  },
-  {
-    path: '/adicionar-usuario-admin',
-    name: 'User admin create',
-    component: () => import('./views/userAdmin/createupdate.vue'),
-    meta: {
-      auth: true
-    }
-  },
-  {
-    path: '/editar-usuario-admin/:id',
-    name: 'User admin update',
-    component: () => import('./views/userAdmin/createupdate.vue'),
-    meta: {
-      auth: true
-    }
-  },
+  ...userAdmin,
   {
     path: '/usuarios',
     name: 'Users',
