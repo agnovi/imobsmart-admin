@@ -21,8 +21,24 @@ const pagination = reactive({
 })
 const columns = ref([
   {
+    label: 'Código',
+    key: 'cod_unique'
+  },
+  {
     label: 'Imóvel',
     key: 'title'
+  },
+  {
+    label: 'Endereço',
+    key: 'address'
+  },
+  {
+    label: 'Bairro',
+    key: 'neighborhoods'
+  },
+  {
+    label: 'Cidade',
+    key: 'citys'
   },
   {
     label: '',

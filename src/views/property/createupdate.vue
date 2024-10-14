@@ -6,7 +6,14 @@ import { onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useRoute, useRouter } from 'vue-router'
 import useAuth from '@/composables/useSession'
-import type { IConfidencial, IProperty, IDadosprim, IDetails, IAnuncio, PropertysImage } from '@/types/property'
+import type {
+  IConfidencial,
+  IProperty,
+  IDadosprim,
+  IDetails,
+  IAnuncio,
+  PropertysImage
+} from '@/types/property'
 import BasicInformations from './forms/BasicInformationsForm.vue'
 import MainInformations from './forms/MainInformationsForm.vue'
 import Details from './forms/DetailsForm.vue'
@@ -174,9 +181,10 @@ async function onSubmit() {
   try {
     const body: IProperty = {
       ...basicInfo.value,
-      images: basicInfo.value?.propertys_images?.map(img => {
-        return { url: img!.url, emphase: img.emphase ? 1 : 0 }
-      }) || [],
+      images:
+        basicInfo.value?.propertys_images?.map((img) => {
+          return { url: img!.url, emphase: img.emphase ? 1 : 0 }
+        }) || []
     }
 
     delete body.propertys_images
@@ -215,16 +223,14 @@ async function load() {
   // anuncio.value = { ...res.data.data.anuncia[0] }
   // confidencial.value = { ...res.data.data.confidencial[0] }
 
-  
   // if (basicInfo.value.anuncia) delete basicInfo.value.anuncia
-  
+
   // delete basicInfo.value.dadosprim
   // delete basicInfo.value.details
   // delete basicInfo.value.anuncio
   // delete basicInfo.value.confidencial
 
-  if(!Array.isArray(basicInfo.value?.propertys_images))
-    basicInfo.value.propertys_images = []
+  if (!Array.isArray(basicInfo.value?.propertys_images)) basicInfo.value.propertys_images = []
 }
 
 function handleUpdateListImages(imgItems: PropertysImage[]) {
@@ -247,13 +253,21 @@ onMounted(() => {
 <template>
   <div class="mt-4">
     <div class="flex justify-between mb-3">
-      <h3 class="text-3xl font-medium text-gray-700">
-        {{ route?.fullPath === '/adicionar-imovel' ? 'Novo Imóvel' : 'Editar Imóvel' }}
-      </h3>
+      <div class="flex items-center gap-5">
+        <h3 class="text-3xl font-medium text-gray-700">
+          {{ route?.fullPath === '/adicionar-imovel' ? 'Novo Imóvel' : 'Editar Imóvel' }}
+        </h3>
+        <span
+          v-if="basicInfo.cod_unique"
+          class="flex items-center justify-center p-[8px] rounded w-fit bg-white text-[#6B7280] text-sm"
+          >#{{ basicInfo.cod_unique }}</span
+        >
+      </div>
       <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
         Voltar
       </button>
     </div>
+
     <Form @submit="onSubmit" class="p-6 bg-white rounded-md shadow-md space-y-6">
       <Tabs :list="tabList" :active="activeTab" @setTab="activeTab = $event">
         <template #tabs-body>
@@ -284,7 +298,12 @@ onMounted(() => {
 
       <!-- Submit Button -->
       <div class="flex justify-end mt-8">
-        <base-button type="submit" :disabled="loadingSave || imageForm?.loadingSaveImage" :loading="loadingSave || imageForm?.loadingSaveImage" class="max-w-fit">
+        <base-button
+          type="submit"
+          :disabled="loadingSave || imageForm?.loadingSaveImage"
+          :loading="loadingSave || imageForm?.loadingSaveImage"
+          class="max-w-fit"
+        >
           <ISave />
           Salvar
         </base-button>
