@@ -137,15 +137,15 @@ function handleSearch(event: any) {
       </template>
       <template #BtnTable>
         <div class="flex justify-end">
-          <button class="btn-import mx-2 whitespace-nowrap" @click="router.push('/importar-imoveis')">
+          <!-- <button class="btn-import mx-2 whitespace-nowrap" @click="router.push('/importar-imoveis')">
             <div class="flex">
               <span> Importar imóveis </span>
               <span class="mx-2 mt-1">
                 <Iimport />
               </span>
             </div>
-          </button>
-          <button class="btn-primary mx-2" @click="handleAddProperty">Adicionar imóvel</button>
+          </button> -->
+          <button class="btn-primary mx-2" @click="handleAddProperty">Adicionar imóvel 45</button>
         </div>
       </template>
     </Table>
