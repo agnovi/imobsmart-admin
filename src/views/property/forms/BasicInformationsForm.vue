@@ -36,6 +36,10 @@ onMounted(() => {
 <template>
   <section>
     <h4 class="text-xl font-semibold text-gray-700 mb-4">Informações Básicas</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+      <base-input v-model="data.name_table" label="Nome da Tabela" />
+      <base-input v-model="data.link_table" label="Link da Tabela" />
+    </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <base-input v-model="data.title" label="Título do Imóvel" />
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -53,12 +57,7 @@ onMounted(() => {
       </div>
       <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         <base-input v-model="data.useful_area" label="Área Útil (m²)" min="0" type="number" />
-        <base-input
-          v-model="data.suites"
-          label="Número de Suites"
-          type="number"
-          min="0"
-        />
+        <base-input v-model="data.suites" label="Número de Suites" type="number" min="0" />
         <base-input
           v-model="data.dormitory_number"
           label="Número de Dormitórios"
@@ -74,7 +73,7 @@ onMounted(() => {
     </div>
 
     <base-input label="Descrição" class="mt-5">
-     <base-editor v-model="data.description" class="w-full" />
+      <base-editor v-model="data.description" class="w-full" />
     </base-input>
   </section>
 
