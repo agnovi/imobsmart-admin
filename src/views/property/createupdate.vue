@@ -260,7 +260,7 @@ onMounted(() => {
         <span
           v-if="basicInfo.cod_unique"
           class="flex items-center justify-center p-[8px] rounded w-fit bg-white text-[#6B7280] text-sm"
-          >#{{ basicInfo.cod_unique }}</span
+          >{{ basicInfo.cod_unique }}</span
         >
       </div>
       <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
