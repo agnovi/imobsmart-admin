@@ -145,7 +145,7 @@ function handleSearch(event: any) {
               </span>
             </div>
           </button> -->
-          <button class="btn-primary mx-2" @click="handleAddProperty">Adicionar imóvel 45</button>
+          <button class="btn-primary mx-2" @click="handleAddProperty">Adicionar imóvel</button>
         </div>
       </template>
     </Table>
