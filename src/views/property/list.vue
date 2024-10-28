@@ -9,6 +9,7 @@ import { formatCNPJ } from '@/util/helpers'
 import useAuth from '@/composables/useSession'
 import { IProperty } from '@/types/property'
 import Swal from 'sweetalert2'
+import { useDebounceFn } from '@vueuse/core'
 const { token } = useAuth()
 const router = useRouter()
 const toast = useToast()
@@ -54,9 +55,7 @@ const search = ref<string>('')
 watch(
   () => search.value,
   () => {
-    if (search.value.length >= 3) listItems()
-
-    if (!search.value) listItems()
+    debouncedFn()
   }
 )
 watch(
@@ -93,6 +92,10 @@ async function listItems() {
     loading.value = false
   }
 }
+
+const debouncedFn = useDebounceFn(() => {
+  listItems()
+}, 1000, { maxWait: 5000 })
 
 function handleAddProperty() {
   router.push('/adicionar-imovel')
