@@ -24,7 +24,7 @@ export function getUser(id: any) {
 }
 
 export function editUser(data: any) {
-  return http.put(`${controller}/${data.id}`, data)
+  return http.put(`${controller}/${data.id_user}`, data)
 }
 
 export function deleteUser(id: number) {
