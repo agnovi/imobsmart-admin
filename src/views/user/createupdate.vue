@@ -61,10 +61,10 @@ async function handleSubmit() {
   try {
     if (route.params.id) {
       await http.patch(`clients/${route.params.id}`, userPayload)
-      toast.success('Usuário atualizado com sucesso')
+      toast.success('Cliente atualizado com sucesso')
     } else {
       await http.post('clients', { ...userPayload })
-      toast.success('Usuário criado com sucesso')
+      toast.success('Cliente criado com sucesso')
     }
     router.back()
   } catch (error) {
@@ -80,7 +80,7 @@ async function handleSubmit() {
     <FullSpinner v-if="loading" />
     <div class="flex justify-between mb-3">
       <h3 class="text-3xl font-medium text-gray-700">
-        {{ route?.fullPath === '/adicionar-usuario' ? 'Novo Usuário' : 'Editar Usuário' }}
+        {{ route?.fullPath === '/adicionar-usuario' ? 'Novo Cliente' : 'Editar Cliente' }}
       </h3>
       <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
         Voltar

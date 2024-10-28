@@ -147,7 +147,7 @@ async function removeUser(item: any) {
 <template>
   <div>
     <FullSpinner v-if="loadingDelete" />
-    <h3 class="text-3xl font-medium text-gray-700">Usuários</h3>
+    <h3 class="text-3xl font-medium text-gray-700">Clientes</h3>
     <Table :loading="loading" :columns="columns" :rows="users" :total-page="pagination.total"
       :current-page="pagination.page" :items-per-page="pagination.limit" :filter-default="true"
       @edit-item="handleEditedit" @delete-item="removeUser" @remove-search="search = ''"
