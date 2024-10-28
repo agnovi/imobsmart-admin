@@ -83,7 +83,7 @@ async function handleSubmit() {
   const userPayload = {
     name: user.value.name,
     email: user.value.email,
-    cpf: user.value.cpf,
+    cpf: user.value.cpf.replace(/\D/g, ''),
     status: user.value.status,
     clients: [
       {
@@ -98,12 +98,12 @@ async function handleSubmit() {
       await http.patch(`users/admin/${route.params.id}`, userPayload)
       toast.success('Usuário atualizado com sucesso')
     } else {
-      await http.post('users/admin', { ...userPayload, password: user.value.password })
+      await http.post('users/admin', { ...userPayload })
       toast.success('Usuário criado com sucesso')
     }
     router.back()
   } catch (error) {
-    toast.error('Erro ao salvar usuário. Tente novamente.')
+    console.log(error)
   } finally {
     loading.value = false
   }
@@ -134,8 +134,6 @@ async function handleSubmit() {
             <base-input v-model="user.email" type="email" label="E-mail" rules="required|email" />
             <Select label="Perfil" :options="perfils" v-model="selectProfile" />
             <Select v-if="selectProfile !== 1" label="Clientes" :options="clients" v-model="selectClient" />
-            <base-input v-if="route.fullPath !== `/editar-usuario-admin/${route.params.id}`" v-model="user.password"
-              type="text" label="Senha" rules="required" />
           </div>
           <div class="flex justify-end mt-8">
             <base-button type="submit" :disabled="loadingSave" :loading="loadingSave" class="max-w-fit">

@@ -23,13 +23,9 @@ const pixOptions = [
 ];
 
 async function loadUser() {
-  await getUser(userState.value.id, { associations :true, campaigns: true}).then(({ data }: any) => {
-
-    console.log('data');
-    console.log(data);
+  await getUser(userState.value.id).then(({ data }: any) => {
     user.value = data;
     user.value.pixType = pixOptions.find((p: any) => p.value === data.pixType);
-
   })
 }
 
@@ -65,7 +61,7 @@ onMounted(() => {
 <template>
   <div>
     <div class="flex justify-between">
-      <h3 class="text-3xl font-medium text-gray-700">Editar perfil</h3>
+      <h3 class="text-3xl font-medium text-gray-700">Meus dados</h3>
       <button class="border border-gray-600 rounded px-2 text-md" @click="handleBack">Voltar</button>
     </div>
     <CardForm>
@@ -73,16 +69,18 @@ onMounted(() => {
         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-1">
           <div>
             <from class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
-              <base-input v-model="user.name_lastname" type="text" label="Nome Completo" rules="required" />
-              <base-input v-model="user.email" type="email" label="E-mail" rules="required" />
+              <base-input v-model="user.name" type="text" label="Nome Completo" rules="required" />
+              <base-input v-model="user.email" disabled type="email" label="E-mail" rules="required" />
               <!-- <base-input v-model="user.phone" type="text" label="Telefone" mask="(##) #####-####" /> -->
             </from>
           </div>
         </div>
         <div class="flex justify-end">
-          <base-button class="btn-saved mt-20 w-fit" @click="Salvar(user)">
-            Salvar Alterações
-          </base-button>
+          <div>
+            <base-button class="btn-saved mt-20 w-fit" @click="Salvar(user)">
+              Salvar Alterações
+            </base-button>
+          </div>
         </div>
       </template>
     </CardForm>

@@ -51,9 +51,9 @@ async function handleSubmit() {
   const userPayload = {
     name: user.value.name,
     email: user.value.email,
-    document: user.value.document,
+    document: user.value.document.replace(/\D/g, ''),
     status: user.value.status,
-    phone: user.value.phone,
+    phone: user.value.phone ? user.value.phone.replace(/\D/g, '') : '',
     type: user.value.type
 
   }
@@ -63,7 +63,7 @@ async function handleSubmit() {
       await http.patch(`clients/${route.params.id}`, userPayload)
       toast.success('Usuário atualizado com sucesso')
     } else {
-      await http.post('clients', { ...userPayload, password: user.value.password })
+      await http.post('clients', { ...userPayload })
       toast.success('Usuário criado com sucesso')
     }
     router.back()
@@ -102,8 +102,6 @@ async function handleSubmit() {
               mask="##.###.###/####-##" />
             <base-input v-model="user.email" label="E-mail" rules="required|email" />
             <base-input v-model="user.phone" label="Telefone" mask="(##) #####-####" rules="required" />
-
-            <base-input v-if="!user.id_client" v-model="user.password" label="Senha" rules="required" />
 
           </div>
           <div class="flex justify-end">
