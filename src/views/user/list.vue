@@ -7,7 +7,7 @@ import { useToast } from 'vue-toastification'
 import { formatCPF } from '@/util/helpers'
 import { listUser, deleteUser } from '@/api/services/User'
 import { httpImport } from '@/api/api'
-
+import { useDebounceFn } from '@vueuse/core'
 import useAuth from '@/composables/useSession'
 import { User } from '@/api/model/UserModel'
 import FullSpinner from '@/components/FullSpinner.vue'
@@ -60,9 +60,7 @@ const search = ref<string>('')
 watch(
   () => search.value,
   () => {
-    if (search.value.length >= 3) listItems()
-
-    if (!search.value) listItems()
+    debouncedFn()
   }
 )
 watch(
@@ -93,6 +91,10 @@ async function listItems() {
     loading.value = false
   }
 }
+
+const debouncedFn = useDebounceFn(() => {
+  listItems()
+}, 1000, { maxWait: 5000 })
 
 function handleAdd() {
   router.push('/adicionar-usuario')
