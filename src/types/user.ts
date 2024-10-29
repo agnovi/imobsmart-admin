@@ -1,10 +1,11 @@
 export interface IUser {
   id?: string | number
-  name: string
-  email: string
-  cpf: string
-  password: string
-  status: boolean
+  token?: string
+  name?: string
+  email?: string
+  cpf?: string
+  password?: string
+  status?: boolean
 }
 
 export interface IClients {

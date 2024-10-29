@@ -7,8 +7,13 @@ const userState = useStorage('user', { id: '' } as any)
 const token = useStorage('token', '')
 
 export default () => {
-  function login(user: Pick<IUser, 'email' | 'password'>) {
-    return authService.login({ email: user.email, password: user.password }).then((res) => {
+  function login(user: Pick<IUser, 'email' | 'password' | 'token'>) {
+    let body: any = { email: user.email, password: user.password }
+
+    if(user.token) {
+      body = { token: user.token }
+    }
+    return authService.login(body).then((res) => {
       if (res.data.access_token) {
         userState.value = { ...res.data }
         token.value = res.data.access_token

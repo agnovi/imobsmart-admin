@@ -4,41 +4,38 @@
       :rules="rules">
       <label v-if="label" :for="props.id || props.name"
         :class="`${!!errorMessage ? 'text-red-700' : 'text-gray-700'} text-[14px] mb-1 block`">{{ label }}</label>
-      <div class="relative w-full flex items-center transition-all" :class="[
+      <div class="relative w-full flex items-center transition-all border" :class="[
         ` ${disabled ? 'bg-gray-100' : ''} ${padding ? padding : noPaddingPX ? 'px-0' : !isSlot ? 'px-0' : 'px-0'} rounded-[8px]`,
         {
           'bg-red-50': !!errorMessage,
           'bg-gray-50': !errorMessage && !isSlot && $route.meta.external,
-          'border-red-500': !!errorMessage,
           wrapper: (!errorMessage && !isSlot) || $route.meta.external,
-          'border border-[#d2d3d4]': isSlot
-        }
+          'border border-[#d2d3d4]': isSlot,
+          'pl-6' : prependIcon || $slots.preppend,
+        },
+         {
+                'border-[#d2d3d4]': !errorMessage && !isSlot,
+                'border-red-500': !!errorMessage
+              }
       ]">
-        <div v-if="prependIcon || $slots.prepend">
+        <div v-if="prependIcon || $slots.preppend" class="absolute left-2 top-3">
           <slot name="preppend" class="mr-[2px]">
             <i :class="prependIcon" class="text-gray-500 text-sm"></i>
           </slot>
         </div>
         <slot v-bind="field">
-          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model.number="value" v-bind="config" :class="[
+          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model.number="value" v-bind="config" class="border-0 bg-transparent outlined-0" style="box-shadow: none" :class="[
             disabled
-              ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
+              ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]'
               : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
-            {
-              'border-[#d2d3d4]': !errorMessage && !isSlot,
-              'border-red-500': !!errorMessage
-            }
           ]" />
 
           <input v-else :id="props.id || props.name" :aria-label="props.name" v-maska :data-maska="mask" :type="type"
-            v-bind="field" :placeholder="placeholder" :class="[
+            v-bind="field" :placeholder="placeholder" class="border-0 bg-transparent outlined-0" style="box-shadow: none" :class="[
               disabled
-                ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md border-[#d2d3d4] placeholder:text-[#D6D6D6]'
+                ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]'
                 : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
-              {
-                'border-[#d2d3d4]': !errorMessage && !isSlot,
-                'border-red-500': !!errorMessage
-              }
+             
             ]" :disabled="disabled" :min="min" :minLength="minLength" @maska="onMaska" @blur="emit('blur')" />
         </slot>
         <div v-if="appendIcon || $slots.append">
@@ -46,15 +43,16 @@
             <i :class="appendIcon" class="text-gray-500 text-sm"></i>
           </slot>
         </div>
-        <div class="w-full absolute left-0 bottom-[-18px] text-center empty:hidden">
-          <p v-if="errorMessage" class="text-xs text-red-500 text-left">
-            {{ errorMessage ? errorMessage : 'Campo obrigatório' }}
-          </p>
-        </div>
+        
         <div v-if="loading" class="absolute right-0">
           <LSpinner :color="'secondary'" />
         </div>
       </div>
+      <div class="w-full left-0 bottom-[-18px] text-center empty:hidden">
+          <p v-if="errorMessage" class="text-xs text-red-500 text-left">
+            {{ errorMessage ? errorMessage : 'Campo obrigatório' }}
+          </p>
+        </div>
     </Field>
     <slot name="infoBlock" />
   </div>

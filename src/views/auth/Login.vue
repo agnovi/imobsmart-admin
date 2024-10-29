@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Form } from 'vee-validate'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification';
 import session from '@/composables/useSession'
-import * as authServices from '@/api/services/AuthService'
+import FullSpinner from '@/components/FullSpinner.vue'
 const router = useRouter()
+const route = useRoute()
 const useSession = session()
 const toast = useToast()
 const loading = ref(false)
+const loadingTokenLogin = ref(false)
 const email = ref('')
 const password = ref('')
-const recoverEmail = ref('')
 async function login() {
   try {
     loading.value = true
@@ -30,8 +31,25 @@ async function login() {
   }
 }
 
+onMounted(async () => {
+  const { token } = route.query;
+  if(token) {
+    try {
+      loadingTokenLogin.value = true
+      await useSession.login({token: token as string})
+      router.push("/cadastrar-senha");
+    } catch (error) {
+      console.log(error)
+      router.replace({query: {}})
+    } finally {
+      loadingTokenLogin.value = false
+    }
+  }
+})
+
 </script>
 <template>
+  <FullSpinner v-if="loadingTokenLogin" />
   <div class="bg-gray-200 min-h-screen">
     <div class="bg-[#2a382a] flex justify-center items-center h-[300px]">
       <div><img src="/logo.png" alt="banner" class="" /></div>
