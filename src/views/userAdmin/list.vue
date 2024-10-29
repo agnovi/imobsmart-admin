@@ -204,7 +204,7 @@ async function handleSendAccess(item: User) {
       </template>
       <template #actions="{row}">
         <button
-          v-if="!row.first_login"
+          v-if="row.first_login"
           type="button"
           class="underline text-green-600 hover:text-green-900"
           @click="handleSendAccess(row)"
