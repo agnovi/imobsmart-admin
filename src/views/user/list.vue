@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { formatCPF } from '@/util/helpers'
 import { listUser, deleteUser } from '@/api/services/User'
-import { httpImport } from '@/api/api'
+import { http } from '@/api/api'
 import { useDebounceFn } from '@vueuse/core'
 import useAuth from '@/composables/useSession'
 import { User } from '@/api/model/UserModel'
@@ -142,6 +142,16 @@ async function removeUser(item: any) {
     }
   })
 }
+
+async function handleSendAccess(item: User) {
+  try {
+    const res = await http.patch(`users/log-in/${item.id_client}`)
+
+    toast.success(`E-mail de acesso enviado para ${item.name}`)
+  } catch (error) {
+    console.log(error)
+  }
+}
 </script>
 
 <template>
@@ -193,7 +203,7 @@ async function removeUser(item: any) {
         </div> -->
         <div v-else-if="row.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
           <span>Inativo</span>
-        </div>
+        </div>        
         <!-- <div v-else-if="row.status === 'DELETED'" class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
           <span>Deletado</span>
         </div> -->
@@ -204,6 +214,17 @@ async function removeUser(item: any) {
           class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
           <span>Pré-registrado</span>
         </div> -->
+      </template>
+
+      <template #actions="{row}">
+        <button
+          v-if="row.first_login"
+          type="button"
+          class="underline text-green-600 hover:text-green-900"
+          @click="handleSendAccess(row)"
+        >
+          Enviar acesso
+        </button>
       </template>
     </Table>
   </div>
