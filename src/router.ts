@@ -13,6 +13,12 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'empty' }
   },
   {
+    path: '/cadastrar-senha',
+    name: 'Cadastrar senha',
+    component: () => import('./views/auth/cadastrar-senha.vue'),
+    meta: { layout: 'empty' }
+  },
+  {
     path: '/recuperar-senha',
     name: 'Recuperar senha',
     component: () => import('./views/auth/recovery-password.vue'),

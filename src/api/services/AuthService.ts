@@ -7,6 +7,10 @@ export function login(user: Pick<IUser, 'email' | 'password'>) {
   return http.post(`${controler}/admin`, user)
 }
 
+export function registerPassword(payload: {password: string}) {
+  return http.patch(`users/update-me`, payload)
+}
+
 export function refreshToken(refreshToken: string) {
   return http.post(`${controler}/refreshtoken`, { refreshtoken: refreshToken })
 }
