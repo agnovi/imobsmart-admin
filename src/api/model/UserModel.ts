@@ -1,5 +1,7 @@
 export interface User {
   id?: number
+  id_client?: number
+  id_user?: number
   cpf?: string
   managerCpf?: string
   managerId?: number
