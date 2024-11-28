@@ -4,23 +4,13 @@ import { useRoute } from 'vue-router'
 import { useSidebar } from '../composables/useSidebar'
 import IDashboard from './icones/IDashboard.vue'
 import IUser from './icones/IUser.vue'
-import ICategories from './icones/ICategories.vue'
-import Tables from './icones/Tables.vue'
-import Megafone from './icones/Tables.vue'
+import IPrice from './icones/IPrice.vue'
 import Company from './icones/Company.vue'
 import RoleIcon from './icones/RoleIcon.vue'
 import ListIcon from './icones/ListIcon.vue'
 import ImportIcon from './icones/ImportIcon.vue'
-import GroupIcon from './icones/GroupIcon.vue'
-import Money from './icones/Money.vue'
-import IMessage from './icones/IMessage.vue'
-import ICap from './icones/ICap.vue'
-import IPenFill from './icones/IPenFill.vue'
-import MonitoringIcon from './icones/MonitoringIcon.vue'
-import GalleryIcon from './icones/GalleryIcon.vue'
-import IProduct from './icones/IProduct.vue'
 
-import ISettings from './icones/ISettings.vue'
+import IMessage from './icones/IMessage.vue'
 
 const { isOpen } = useSidebar()
 const router = useRoute()
@@ -33,10 +23,11 @@ const inactiveClassText = ref('text-[#6b7280]')
 const link = [
   { id: 1, title: 'Dashboard', path: '/dashboard' },
   // { id: 9, title: 'Importações', path: '/importacoes' },
-  { id: 7, title: 'Clientes', path: '/usuarios' },
+  { id: 2, title: 'Clientes', path: '/usuarios' },
   // { id: 16, title: 'Contatos', path: '/contatos' },
-  { id: 8, title: 'Usuários', path: '/usuarios-admin' },
+  { id: 3, title: 'Usuários', path: '/usuarios-admin' },
   { id: 4, title: 'Imóveis', path: '/imoveis' },
+  { id: 5, title: 'Planos', path: '/planos' },
   // { id: 5, title: 'Cargos', path: '/cargos' },
   // { id: 6, title: 'Setores', path: '/setores' },
 ]
@@ -76,6 +67,7 @@ function colorIcon(item: any) {
             <ListIcon v-if="item.path === '/setores'" :color="colorIcon(item)" />
             <ImportIcon v-if="item.path === '/importacoes'" :color="colorIcon(item)" />
             <IMessage v-if="item.path === '/contatos'" :color="colorIcon(item)" />
+            <IPrice v-if="item.path === '/planos'" />
 
             <span class="mx-4" :class="[linkActive === item.path ? activeClassText : inactiveClassText]">{{ item.title
               }}</span>
@@ -90,6 +82,10 @@ function colorIcon(item: any) {
           </div>
           <div v-if="item.path === '/usuarios-admin'" class="flex gap-2 px-6 items-center mt-6 mb-2">
             <p class=" text-[#495386] text-sm tracking-widest">IMÒVEIS</p>
+            <hr class="w-full my-2 border-[#495386]" />
+          </div>
+          <div v-if="item.path === '/imoveis'" class="flex gap-2 px-6 items-center mt-6 mb-2">
+            <p class=" text-[#495386] text-sm tracking-widest">PLANOS</p>
             <hr class="w-full my-2 border-[#495386]" />
           </div>
         </div>

@@ -4,6 +4,7 @@ import useAuth from '@/composables/useSession'
 
 import Dashboard from './views/Dashboard.vue'
 import { userAdmin } from './routes/userAdmin'
+import { plans } from './routes/plans'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -32,6 +33,7 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'empty' }
   },
   ...userAdmin,
+  ...plans,
   {
     path: '/usuarios',
     name: 'Users',

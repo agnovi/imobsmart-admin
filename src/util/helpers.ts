@@ -13,7 +13,7 @@ export function validaCpfCnpj(elemento: string) {
 }
 
 export function formatCPF(cpf: string | number): string {
-  if(!cpf) return ''
+  if (!cpf) return ''
   let cpfStr = cpf.toString()
   cpfStr = cpfStr.replace(/\D/g, '')
 
@@ -268,9 +268,21 @@ export function removeNullFields(obj: Record<string, any>): Record<string, any> 
   return Object.fromEntries(
     Object.entries(obj)
       .filter(([_, value]) => value !== null) // Filtra os campos com valor null
-      .map(([key, value]) => 
+      .map(([key, value]) =>
         // Se o valor for um objeto, chama a função recursivamente
-        [key, value && typeof value === 'object' && !Array.isArray(value) ? removeNullFields(value) : value]
+        [
+          key,
+          value && typeof value === 'object' && !Array.isArray(value)
+            ? removeNullFields(value)
+            : value
+        ]
       )
-  );
+  )
+}
+
+export function formatToBRL(value: number): string {
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
 }
