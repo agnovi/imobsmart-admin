@@ -5,9 +5,11 @@ const props = withDefaults(
     options?: { label: string; value: any }[];
     multiple?: boolean;
     placeholder?: string;
+    disabled?: boolean;
   }>(),
   {
     multiple: false,
+    disabled: false,
   }
 );
 
@@ -21,7 +23,7 @@ const inputValue = defineModel<any>();
     }}</label>
     <v-select v-model="inputValue" :multiple="multiple" :placeholder="placeholder || 'Selecionar'"
       :options="props.options || []" :reduce="(opt: any) => opt.value"
-      class="text-sm border border-[#d2d3d4] rounded-md" />
+      class="text-sm border border-[#d2d3d4] rounded-md disabled:bg-gray-400" :disabled="props.disabled" />
     <div v-if="multiple" class="flex flex-wrap gap-1 mt-1.5">
       <div v-for="option in inputValue" :key="option.value" class="bg-gray-200 flex rounded-full text-sm px-2 py-1">
         {{ option.label }}

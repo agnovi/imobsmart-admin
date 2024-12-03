@@ -33,18 +33,35 @@ const user = ref<IClients>({
 } as IClients)
 const loading = ref(false)
 const loadingSave = ref(false)
+const plans = ref<any[]>([])
 
 async function getUser() {
   const res = await UserServices.getUser(String(route.params.id))
-  console.log(res)
-  user.value = { ...res.data }
+  user.value = { ...res.data, id_plan: res.data?.clients_plans?.plans?.id_plan }
 }
 
 onMounted(() => {
   if (token.value) {
     if (route.fullPath === `/editar-usuario/${route.params.id}`) getUser()
   }
+
+  getePlans()
 })
+
+async function getePlans() {
+  try {
+    const res = await http.get('/plans')
+    plans.value = res.data.rows.map((p: any) => {
+      return {
+        label: p.name,
+        value: p.id_plan
+      }
+    })
+    console.log(res.data)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 async function handleSubmit() {
   loading.value = true
@@ -54,8 +71,8 @@ async function handleSubmit() {
     document: user.value.document.replace(/\D/g, ''),
     status: user.value.status,
     phone: user.value.phone ? user.value.phone.replace(/\D/g, '') : '',
-    type: user.value.type
-
+    type: user.value.type,
+    id_plan: user.value.id_plan
   }
 
   try {
@@ -102,7 +119,7 @@ async function handleSubmit() {
               mask="##.###.###/####-##" />
             <base-input v-model="user.email" label="E-mail" rules="required|email" />
             <base-input v-model="user.phone" label="Telefone" mask="(##) #####-####" rules="required" />
-
+            <Select :disabled="route.params.id" label="Planos" :options="plans" v-model="user.id_plan" />
           </div>
           <div class="flex justify-end">
             <base-button type="submit" :disabled="loadingSave" :loading="loadingSave" class="mt-10 max-w-fit">

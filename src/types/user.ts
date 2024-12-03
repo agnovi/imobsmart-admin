@@ -17,4 +17,5 @@ export interface IClients {
   phone?: string
   status: string
   type: string
+  id_plan: any
 }
