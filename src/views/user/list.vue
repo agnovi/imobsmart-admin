@@ -43,6 +43,11 @@ const columns = ref([
     custom: true
   },
   {
+    label: 'Plano',
+    key: 'plan',
+    custom: true
+  },
+  {
     label: 'Status',
     key: 'status',
     custom: true
@@ -194,6 +199,24 @@ async function handleSendAccess(item: User) {
       <template #type="{ row }">
         <p>{{ row.type === 'PF' ? "Pessoa Física" : 'Pessoa Jurídica' }}</p>
       </template>
+      <template #plan="{ row }">
+        <p>{{ row?.plan_active?.plans?.name }}</p>
+        <div v-if="row?.plan_active?.status === 'RECEIVED'"
+          class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1">
+          <span>Pago</span>
+        </div>
+        <!-- <div v-else-if="row?.plan_active?.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
+          <span>Inativo</span>
+        </div> -->
+        <div v-else-if="row?.plan_active?.status === 'PROCESSING'"
+          class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
+          <span>Processando</span>
+        </div>
+        <div v-else-if="row?.plan_active?.status === 'TRIAL'"
+          class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
+          <span>Trial</span>
+        </div>
+      </template>
       <template #status="{ row }">
         <div v-if="row.status === 'ATIVO'" class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1">
           <span>Ativo</span>
@@ -203,7 +226,7 @@ async function handleSendAccess(item: User) {
         </div> -->
         <div v-else-if="row.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
           <span>Inativo</span>
-        </div>        
+        </div>
         <!-- <div v-else-if="row.status === 'DELETED'" class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
           <span>Deletado</span>
         </div> -->
@@ -216,13 +239,9 @@ async function handleSendAccess(item: User) {
         </div> -->
       </template>
 
-      <template #actions="{row}">
-        <button
-          v-if="row.first_login"
-          type="button"
-          class="underline text-green-600 hover:text-green-900"
-          @click="handleSendAccess(row)"
-        >
+      <template #actions="{ row }">
+        <button v-if="row.first_login" type="button" class="underline text-green-600 hover:text-green-900"
+          @click="handleSendAccess(row)">
           Enviar acesso
         </button>
       </template>
