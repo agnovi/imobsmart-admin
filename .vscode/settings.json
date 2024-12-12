@@ -1,4 +1,12 @@
 {
     "scss.lint.unknownAtRules": "ignore",
     "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+    "workbench.startupEditor": "newUntitledFile",
+    "editor.renderWhitespace": "none",
+    "editor.cursorBlinking": "smooth",
+    "search.followSymlinks": false,
+    "files.exclude": {
+        "node_modules": true,
+        ".git": true
+    }
 }

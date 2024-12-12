@@ -64,7 +64,7 @@ async function getePlans() {
 }
 
 async function handleSubmit() {
-  loading.value = true
+
   const userPayload = {
     name: user.value.name,
     email: user.value.email,
@@ -75,6 +75,11 @@ async function handleSubmit() {
     id_plan: user.value.id_plan
   }
 
+  if (!user.value.id_plan) {
+    toast.error('Selecione um plano')
+    return
+  }
+  loading.value = true
   try {
     if (route.params.id) {
       await http.patch(`clients/${route.params.id}`, userPayload)

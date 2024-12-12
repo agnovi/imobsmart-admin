@@ -11,6 +11,7 @@ import ISave from '@/components/icones/ISave.vue'
 import Select from '@/components/Select.vue'
 import type { IUser } from '@/types/user'
 import { http } from '@/api/api'
+import Swal from 'sweetalert2'
 
 const { token } = useAuth()
 const toast = useToast()
@@ -83,7 +84,7 @@ async function handleSubmit() {
   const userPayload = {
     name: user.value.name,
     email: user.value.email,
-    cpf: user.value.cpf.replace(/\D/g, ''),
+    cpf: user.value?.cpf?.replace(/\D/g, ''),
     status: user.value.status,
     clients: [
       {
@@ -94,14 +95,38 @@ async function handleSubmit() {
   }
 
   try {
+
     if (route.params.id) {
       await http.patch(`users/admin/${route.params.id}`, userPayload)
-      toast.success('Usuário atualizado com sucesso')
+      toast.success('Usuário salvo com sucesso')
+      router.back()
     } else {
-      await http.post('users/admin', { ...userPayload })
-      toast.success('Usuário criado com sucesso')
+      const responseUser = await http.get(`users/unique?email=${userPayload.email}&document=${userPayload.cpf}`)
+      console.log(responseUser)
+
+      if (!responseUser.data) {
+        await http.post('users/admin', { ...userPayload })
+        toast.success('Usuário salvo com sucesso')
+        router.back()
+      } else {
+        Swal.fire({
+          title: "Usuário já existe com esse cpf/email porém está inativado",
+          text: "Você deseja reativar?",
+          showDenyButton: false,
+          showCancelButton: true,
+          confirmButtonText: "Reativar",
+          confirmButtonColor: '#008000',
+          cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            await http.patch(`users/active/${responseUser.data.id_user}`)
+            router.back()
+          }
+        })
+      }
+
+
     }
-    router.back()
   } catch (error) {
     console.log(error)
   } finally {

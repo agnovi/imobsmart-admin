@@ -78,7 +78,9 @@ const loadingData = ref(false)
 
 onMounted(() => {
     listTypes()
-    getIdPlan()
+    if (route.params.id) {
+        getIdPlan()
+    }
 })
 
 const listTypes = async () => {

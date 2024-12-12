@@ -188,7 +188,7 @@ async function handleSendAccess(item: User) {
         <!-- <div v-else-if="row.status === 'PENDING'" class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
           <span>Pendente</span>
         </div> -->
-        <div v-else-if="row.status === 'INACTIVE'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
+        <div v-else-if="row.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
           <span>Inativo</span>
         </div>
         <!-- <div v-else-if="row.status === 'DELETED'" class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
@@ -202,13 +202,9 @@ async function handleSendAccess(item: User) {
           <span>Pré-registrado</span>
         </div> -->
       </template>
-      <template #actions="{row}">
-        <button
-          v-if="row.first_login"
-          type="button"
-          class="underline text-green-600 hover:text-green-900"
-          @click="handleSendAccess(row)"
-        >
+      <template #actions="{ row }">
+        <button v-if="row.first_login" type="button" class="underline text-green-600 hover:text-green-900"
+          @click="handleSendAccess(row)">
           Enviar acesso
         </button>
       </template>
