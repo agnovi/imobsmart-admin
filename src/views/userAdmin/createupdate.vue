@@ -80,7 +80,7 @@ onMounted(() => {
 })
 
 async function handleSubmit() {
-  loading.value = true
+
   const userPayload = {
     name: user.value.name,
     email: user.value.email,
@@ -94,6 +94,22 @@ async function handleSubmit() {
     ]
   }
 
+  console.log(selectProfile.value)
+
+  if (!selectProfile.value) {
+    toast.error('Selecione um perfil')
+    return
+  }
+
+  if (selectProfile.value !== 1 && !selectClient.value) {
+    toast.error('Selecione um cliente para o perfil selecionado')
+    return
+  }
+
+
+
+  loading.value = true
+
   try {
 
     if (route.params.id) {
@@ -102,8 +118,6 @@ async function handleSubmit() {
       router.back()
     } else {
       const responseUser = await http.get(`users/unique?email=${userPayload.email}&document=${userPayload.cpf}`)
-      console.log(responseUser)
-
       if (!responseUser.data) {
         await http.post('users/admin', { ...userPayload })
         toast.success('Usuário salvo com sucesso')
