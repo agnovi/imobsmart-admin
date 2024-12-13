@@ -39,6 +39,10 @@
                             <base-select v-model="data.parcel" :options="ciclos" />
                         </base-input>
                     </div>
+                    <div v-if="data.is_company" class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                        <base-input v-model="data.qtd_user" type="number" label="Quantidade de usuário" min="0" />
+
+                    </div>
                     <div class="flex justify-end mt-8">
                         <base-button type="submit" :disabled="loading" :loading="loading" class="max-w-fit">
                             <ISave />
@@ -71,7 +75,8 @@ const data = ref({
     value_total: 0,
     is_company: false,
     parcel: 'MONTHLY',
-    status: 1
+    status: 1,
+    qtd_user: 0,
 })
 const loading = ref(false)
 const loadingData = ref(false)
@@ -101,6 +106,7 @@ const getIdPlan = async () => {
         data.value.is_company = res.data.is_company === 0 ? false : true
         data.value.parcel = res.data.parcel.value
         data.value.status = res.data.status
+        data.value.qtd_user = res.data.qtd_user
     } catch (error) {
         console.log(error)
     } finally {
