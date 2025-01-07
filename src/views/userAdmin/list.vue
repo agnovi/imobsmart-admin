@@ -48,13 +48,26 @@ const columns = ref([
 ])
 
 onMounted(() => {
-  if (token.value) listItems()
+  if (token.value) {
+    loading.value = true
+    const query = router.currentRoute.value.query
+    pagination.page = query.page ? Number(query.page) : 1
+    pagination.limit = query.limit ? Number(query.limit) : 10
+    search.value = query.search ? String(query.search) : ''
+
+    router.replace({ path: router.currentRoute.value.path, query: {} })
+    listItems()
+  }
 })
 const search = ref<string>('')
 watch(
   () => search.value,
   () => {
-    debouncedFn()
+    if (loading.value) return
+    pagination.page = 1
+    if (search.value.length >= 3) debouncedFn()
+
+    if (!search.value) debouncedFn()
   }
 )
 watch(
@@ -72,7 +85,6 @@ watch(
   { deep: true }
 )
 
-
 async function listItems() {
   loading.value = true
   try {
@@ -86,16 +98,27 @@ async function listItems() {
   }
 }
 
-const debouncedFn = useDebounceFn(() => {
-  listItems()
-}, 1000, { maxWait: 5000 })
+const debouncedFn = useDebounceFn(
+  () => {
+    listItems()
+  },
+  1000,
+  { maxWait: 5000 }
+)
 
 function handleAdd() {
   router.push('/adicionar-usuario-admin')
 }
 
 async function handleEditedit(item: any) {
-  router.push(`/editar-usuario-admin/${item.id_user}`)
+  router.push({
+    path: `/editar-usuario-admin/${item.id_user}`,
+    query: {
+      page: String(pagination.page),
+      limit: String(pagination.limit),
+      search: search.value || ''
+    }
+  })
 }
 
 // async function exportItem() {
@@ -148,10 +171,22 @@ async function handleSendAccess(item: User) {
 <template>
   <div>
     <h3 class="text-3xl font-medium text-gray-700">Usuários</h3>
-    <Table :loading="loading" :columns="columns" :rows="users" :total-page="pagination.total"
-      :current-page="pagination.page" :items-per-page="pagination.limit" :filter-default="true"
-      @edit-item="handleEditedit" @delete-item="removeUser" @remove-search="search = ''"
-      @changePerPage="pagination.limit = $event" @changePage="pagination.page = $event" @search="search = $event">
+    <Table
+      :loading="loading"
+      :columns="columns"
+      :rows="users"
+      :total-page="pagination.total"
+      :current-page="pagination.page"
+      :items-per-page="pagination.limit"
+      :filter-default="true"
+      :searchProps="search"
+      @edit-item="handleEditedit"
+      @delete-item="removeUser"
+      @remove-search="search = ''"
+      @changePerPage="pagination.limit = $event"
+      @changePage="pagination.page = $event"
+      @search="search = $event"
+    >
       <template #BtnTable>
         <div class="flex justify-end">
           <!-- <button type="button" class="btn-import mss-2 mr-2 whitespace-nowrap" @click="exportItem">
@@ -182,13 +217,19 @@ async function handleSendAccess(item: User) {
         <p>{{ formatCPF(row.cpf) }}</p>
       </template>
       <template #status="{ row }">
-        <div v-if="row.status === 'ATIVO'" class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1">
+        <div
+          v-if="row.status === 'ATIVO'"
+          class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1"
+        >
           <span>Ativo</span>
         </div>
         <!-- <div v-else-if="row.status === 'PENDING'" class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
           <span>Pendente</span>
         </div> -->
-        <div v-else-if="row.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
+        <div
+          v-else-if="row.status === 'INATIVO'"
+          class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1"
+        >
           <span>Inativo</span>
         </div>
         <!-- <div v-else-if="row.status === 'DELETED'" class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
@@ -203,8 +244,12 @@ async function handleSendAccess(item: User) {
         </div> -->
       </template>
       <template #actions="{ row }">
-        <button v-if="row.first_login" type="button" class="underline text-green-600 hover:text-green-900"
-          @click="handleSendAccess(row)">
+        <button
+          v-if="row.first_login"
+          type="button"
+          class="underline text-green-600 hover:text-green-900"
+          @click="handleSendAccess(row)"
+        >
           Enviar acesso
         </button>
       </template>

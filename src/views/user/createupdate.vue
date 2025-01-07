@@ -40,9 +40,14 @@ async function getUser() {
   user.value = { ...res.data, id_plan: res.data?.clients_plans?.plans?.id_plan }
 }
 
+function handleBack() {
+  const queryParams = router.currentRoute.value.query; // Captura as queries atuais
+  router.push({ path: '/usuarios', query: queryParams }); // Retorna mantendo as queries
+}
+
 onMounted(() => {
   if (token.value) {
-    if (route.fullPath === `/editar-usuario/${route.params.id}`) getUser()
+    if (route.params.id) getUser()
   }
 
   getePlans()
@@ -88,7 +93,7 @@ async function handleSubmit() {
       await http.post('clients', { ...userPayload })
       toast.success('Cliente criado com sucesso')
     }
-    router.back()
+    handleBack()
   } catch (error) {
     loading.value = false
   } finally {
@@ -104,7 +109,7 @@ async function handleSubmit() {
       <h3 class="text-3xl font-medium text-gray-700">
         {{ route?.fullPath === '/adicionar-usuario' ? 'Novo Cliente' : 'Editar Cliente' }}
       </h3>
-      <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
+      <button class="border border-gray-600 rounded px-2 text-md" @click="handleBack">
         Voltar
       </button>
     </div>
@@ -124,7 +129,7 @@ async function handleSubmit() {
               mask="##.###.###/####-##" />
             <base-input v-model="user.email" label="E-mail" rules="required|email" />
             <base-input v-model="user.phone" label="Telefone" mask="(##) #####-####" rules="required" />
-            <Select :disabled="route.params.id" label="Planos" :options="plans" v-model="user.id_plan" />
+            <Select :disabled="!!route.params.id" label="Planos" :options="plans" v-model="user.id_plan" />
           </div>
           <div class="flex justify-end">
             <base-button type="submit" :disabled="loadingSave" :loading="loadingSave" class="mt-10 max-w-fit">

@@ -207,7 +207,7 @@ async function onSubmit() {
     }
 
     toast.success(`Imóvel ${!basicInfo.value.id_property ? 'cadastrado' : 'editado'} com sucesso!`)
-    router.push('/imoveis')
+    handleBack()
   } catch (error) {
     console.error('Erro ao salvar o imóvel:', error)
   } finally {
@@ -237,6 +237,11 @@ function handleUpdateListImages(imgItems: PropertysImage[]) {
   basicInfo.value.propertys_images = imgItems
 }
 
+function handleBack() {
+  const queryParams = router.currentRoute.value.query; // Captura as queries atuais
+  router.push({ path: '/imoveis', query: queryParams }); // Retorna mantendo as queries
+}
+
 onMounted(() => {
   // const res = { data: mock }
   // basicInfo.value = { ...res.data.data }
@@ -263,7 +268,7 @@ onMounted(() => {
           >{{ basicInfo.cod_unique }}</span
         >
       </div>
-      <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
+      <button class="border border-gray-600 rounded px-2 text-md" @click="handleBack">
         Voltar
       </button>
     </div>

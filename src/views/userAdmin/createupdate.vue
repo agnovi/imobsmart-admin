@@ -74,7 +74,7 @@ async function getClients() {
 
 onMounted(() => {
   if (token.value) {
-    if (route.fullPath === `/editar-usuario-admin/${route.params.id}`) getUser()
+    if (route.params.id) getUser()
   }
   getClients()
 })
@@ -115,13 +115,13 @@ async function handleSubmit() {
     if (route.params.id) {
       await http.patch(`users/admin/${route.params.id}`, userPayload)
       toast.success('Usuário salvo com sucesso')
-      router.back()
+      handleBack()
     } else {
       const responseUser = await http.get(`users/unique?email=${userPayload.email}&document=${userPayload.cpf}`)
       if (!responseUser.data) {
         await http.post('users/admin', { ...userPayload })
         toast.success('Usuário salvo com sucesso')
-        router.back()
+        handleBack()
       } else {
         Swal.fire({
           title: "Usuário já existe com esse cpf/email porém está inativado",
@@ -134,7 +134,7 @@ async function handleSubmit() {
         }).then(async (result) => {
           if (result.isConfirmed) {
             await http.patch(`users/active/${responseUser.data.id_user}`)
-            router.back()
+            handleBack()
           }
         })
       }
@@ -147,6 +147,10 @@ async function handleSubmit() {
     loading.value = false
   }
 }
+function handleBack() {
+  const queryParams = router.currentRoute.value.query; // Captura as queries atuais
+  router.push({ path: '/usuarios-admin', query: queryParams }); // Retorna mantendo as queries
+}
 </script>
 
 <template>
@@ -158,7 +162,7 @@ async function handleSubmit() {
           route?.fullPath === '/adicionar-usuario-admin' ? 'Novo Usuário' : 'Editar Usuário'
         }}
       </h3>
-      <button class="border border-gray-600 rounded px-2 text-md" @click="$router.go(-1)">
+      <button class="border border-gray-600 rounded px-2 text-md" @click="handleBack">
         Voltar
       </button>
     </div>

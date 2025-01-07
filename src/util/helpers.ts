@@ -281,6 +281,8 @@ export function removeNullFields(obj: Record<string, any>): Record<string, any> 
 }
 
 export function formatToBRL(value: number): string {
+  if (!value) return ''
+
   return value.toLocaleString('pt-BR', {
     style: 'currency',
     currency: 'BRL'

@@ -144,4 +144,10 @@ export interface IDetails {
 export enum TipoOperacao {
   Venda = 'venda',
   Locacao = 'locacao',
-} 
+}
+
+export enum StatusPropertys {
+  PUBLICADO = 'PUBLICADO',
+  RASCUNHO = 'RASCUNHO',
+  INATIVO = 'INATIVO',
+}

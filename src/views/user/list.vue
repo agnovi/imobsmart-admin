@@ -59,13 +59,26 @@ const columns = ref([
 ])
 
 onMounted(() => {
-  if (token.value) listItems()
+  if (token.value) {
+    loading.value = true
+    const query = router.currentRoute.value.query
+    pagination.page = query.page ? Number(query.page) : 1
+    pagination.limit = query.limit ? Number(query.limit) : 10
+    search.value = query.search ? String(query.search) : ''
+
+    router.replace({ path: router.currentRoute.value.path, query: {} })
+    listItems()
+  }
 })
 const search = ref<string>('')
 watch(
   () => search.value,
   () => {
-    debouncedFn()
+    if(loading.value) return
+    pagination.page = 1
+    if (search.value.length >= 3) debouncedFn()
+
+    if (!search.value) debouncedFn()
   }
 )
 watch(
@@ -87,7 +100,7 @@ async function listItems() {
   loading.value = true
   try {
     const res = await listUser(pagination.page, pagination.limit, search.value)
-    console.log("clientes", res)
+    console.log('clientes', res)
     pagination.total = res.data.pagination.totalQuantity
     users.value = res.data?.rows
   } catch (error) {
@@ -97,16 +110,27 @@ async function listItems() {
   }
 }
 
-const debouncedFn = useDebounceFn(() => {
-  listItems()
-}, 1000, { maxWait: 5000 })
+const debouncedFn = useDebounceFn(
+  () => {
+    listItems()
+  },
+  1000,
+  { maxWait: 5000 }
+)
 
 function handleAdd() {
   router.push('/adicionar-usuario')
 }
 
 async function handleEditedit(item: any) {
-  router.push(`/editar-usuario/${item.id_client}`)
+  router.push({
+    path: `/editar-usuario/${item.id_client}`,
+    query: {
+      page: String(pagination.page),
+      limit: String(pagination.limit),
+      search: search.value || ''
+    }
+  })
 }
 
 // async function exportItem() {
@@ -138,12 +162,14 @@ async function removeUser(item: any) {
   }).then((result: any) => {
     if (result.isConfirmed) {
       loadingDelete.value = true
-      deleteUser(item.id_client).then(() => {
-        listItems()
-        toast.success('Cliente excluido com sucesso!')
-      }).finally(() => {
-        loadingDelete.value = false
-      })
+      deleteUser(item.id_client)
+        .then(() => {
+          listItems()
+          toast.success('Cliente excluido com sucesso!')
+        })
+        .finally(() => {
+          loadingDelete.value = false
+        })
     }
   })
 }
@@ -163,10 +189,22 @@ async function handleSendAccess(item: User) {
   <div>
     <FullSpinner v-if="loadingDelete" />
     <h3 class="text-3xl font-medium text-gray-700">Clientes</h3>
-    <Table :loading="loading" :columns="columns" :rows="users" :total-page="pagination.total"
-      :current-page="pagination.page" :items-per-page="pagination.limit" :filter-default="true"
-      @edit-item="handleEditedit" @delete-item="removeUser" @remove-search="search = ''"
-      @changePerPage="pagination.limit = $event" @changePage="pagination.page = $event" @search="search = $event">
+    <Table
+      :loading="loading"
+      :columns="columns"
+      :rows="users"
+      :total-page="pagination.total"
+      :current-page="pagination.page"
+      :items-per-page="pagination.limit"
+      :filter-default="true"
+      :searchProps="search"
+      @edit-item="handleEditedit"
+      @delete-item="removeUser"
+      @remove-search="search = ''"
+      @changePerPage="pagination.limit = $event"
+      @changePage="pagination.page = $event"
+      @search="search = $event"
+    >
       <template #BtnTable>
         <div class="flex justify-end">
           <!-- <button type="button" class="btn-import mss-2 mr-2 whitespace-nowrap" @click="exportItem">
@@ -197,34 +235,46 @@ async function handleSendAccess(item: User) {
         <p>{{ formatCPF(row.document) }}</p>
       </template>
       <template #type="{ row }">
-        <p>{{ row.type === 'PF' ? "Pessoa Física" : 'Pessoa Jurídica' }}</p>
+        <p>{{ row.type === 'PF' ? 'Pessoa Física' : 'Pessoa Jurídica' }}</p>
       </template>
       <template #plan="{ row }">
         <p>{{ row?.plan_active?.plans?.name }}</p>
-        <div v-if="row?.plan_active?.status === 'RECEIVED'"
-          class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1">
+        <div
+          v-if="row?.plan_active?.status === 'RECEIVED'"
+          class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1"
+        >
           <span>Pago</span>
         </div>
         <!-- <div v-else-if="row?.plan_active?.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
           <span>Inativo</span>
         </div> -->
-        <div v-else-if="row?.plan_active?.status === 'PROCESSING'"
-          class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
+        <div
+          v-else-if="row?.plan_active?.status === 'PROCESSING'"
+          class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1"
+        >
           <span>Processando</span>
         </div>
-        <div v-else-if="row?.plan_active?.status === 'TRIAL'"
-          class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
+        <div
+          v-else-if="row?.plan_active?.status === 'TRIAL'"
+          class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1"
+        >
           <span>Trial</span>
         </div>
       </template>
       <template #status="{ row }">
-        <div v-if="row.status === 'ATIVO'" class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1">
+        <div
+          v-if="row.status === 'ATIVO'"
+          class="text-[#10B981] text-center bg-[#D1FAE5] rounded-full py-1"
+        >
           <span>Ativo</span>
         </div>
         <!-- <div v-else-if="row.status === 'PENDING'" class="text-[#F59E0B] text-center bg-[#FEF3C7] rounded-full py-1">
           <span>Pendente</span>
         </div> -->
-        <div v-else-if="row.status === 'INATIVO'" class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1">
+        <div
+          v-else-if="row.status === 'INATIVO'"
+          class="text-[#C53030] text-center bg-[#FEE2E2] rounded-full py-1"
+        >
           <span>Inativo</span>
         </div>
         <!-- <div v-else-if="row.status === 'DELETED'" class="text-[#6B7280] text-center bg-[#E5E7EB] rounded-full py-1">
@@ -240,8 +290,12 @@ async function handleSendAccess(item: User) {
       </template>
 
       <template #actions="{ row }">
-        <button v-if="row.first_login" type="button" class="underline text-green-600 hover:text-green-900"
-          @click="handleSendAccess(row)">
+        <button
+          v-if="row.first_login"
+          type="button"
+          class="underline text-green-600 hover:text-green-900"
+          @click="handleSendAccess(row)"
+        >
           Enviar acesso
         </button>
       </template>

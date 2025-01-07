@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Pagination from './Pagination.vue'
 import Iimport from './icones/Iimport.vue'
 import IDownload from './icones/IDownload.vue'
@@ -15,6 +15,7 @@ interface Props {
   rows: any[]
   totalPage?: number
   itemsPerPage?: number
+  searchProps?: string
   filterDefault?: boolean
   currentPage?: number
   canEdit?: boolean
@@ -40,7 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
   columns: () => [],
   rows: () => []
 })
-const search = ref()
+const search = ref(props.searchProps)
 const perPage = ref(10)
 const selectedRole = ref<any>('')
 
@@ -105,12 +106,12 @@ function removeSearch() {
   search.value = ''
   emits('removeSearch')
 }
-// watch(
-//   () => search.value,
-//   () => {
-//     emits('search', search.value)
-//   }
-// )
+watch(
+  () => props.searchProps,
+  () => {
+    search.value = props.searchProps
+  }
+)
 </script>
 <style scoped>
 .rowInactive {
@@ -143,7 +144,7 @@ function removeSearch() {
           <input v-model="search" @input="handleSearch"
             :placeholder="filterPlaceholder ? filterPlaceholder : 'Pesquisar'"
             class="w-full  sm:rounded-l-none focus:bg-white border-none  focus:outline-none focus:ring-0 focus:border-transparent " />
-          <svg @click="removeSearch" v-if="search?.length > 0" xmlns="http://www.w3.org/2000/svg"
+          <svg @click="removeSearch" v-if="search && search?.length > 0" xmlns="http://www.w3.org/2000/svg"
             class="-ml-1 mr-3 h-7 w-7 cursor-pointer text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

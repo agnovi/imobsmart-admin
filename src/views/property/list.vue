@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue'
 import Table from '../../components/Table.vue'
+import Badge from '../../components/Badge.vue'
 import * as PropertyServices from '@/api/services/PropertyService'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
-import Iimport from '@/components/icones/Iimport.vue'
 import { formatCNPJ } from '@/util/helpers'
 import useAuth from '@/composables/useSession'
 import { IProperty } from '@/types/property'
 import Swal from 'sweetalert2'
 import { useDebounceFn } from '@vueuse/core'
+import { formatToBRL } from '@/util/helpers'
 const { token } = useAuth()
 const router = useRouter()
 const toast = useToast()
@@ -22,16 +23,12 @@ const pagination = reactive({
 })
 const columns = ref([
   {
-    label: 'Código',
-    key: 'cod_unique'
+    label: 'ID',
+    key: 'id_property'
   },
   {
     label: 'Imóvel',
     key: 'title'
-  },
-  {
-    label: 'Endereço',
-    key: 'address'
   },
   {
     label: 'Bairro',
@@ -42,22 +39,58 @@ const columns = ref([
     key: 'citys'
   },
   {
+    label: 'Valor',
+    key: 'sale_value',
+    custom: true
+  },
+  {
+    label: 'Dormitórios',
+    key: 'dormitory_number'
+  },
+  {
+    label: 'Suites',
+    key: 'suites'
+  },
+  {
+    label: 'Vagas',
+    key: 'vacancies'
+  },
+  {
+    label: 'Status',
+    key: 'status',
+    custom: true
+  },
+  {
     label: '',
     key: 'actions'
   }
 ])
 
 onMounted(() => {
-  if (token.value)
+  if (token.value) {
+    loading.value = true
+    const query = router.currentRoute.value.query
+    pagination.page = query.page ? Number(query.page) : 1
+    pagination.limit = query.limit ? Number(query.limit) : 10
+    search.value = query.search ? String(query.search) : ''
+
+    router.replace({ path: router.currentRoute.value.path, query: {} })
     listItems()
+  }
 })
 const search = ref<string>('')
+
 watch(
   () => search.value,
   () => {
-    debouncedFn()
+    if(loading.value) return
+    pagination.page = 1
+    if (search.value.length >= 1) debouncedFn()
+
+    if (!search.value) debouncedFn()
   }
 )
+
 watch(
   () => pagination.page,
   () => {
@@ -76,11 +109,7 @@ watch(
 async function listItems() {
   loading.value = true
   try {
-    const res = await PropertyServices.list(
-      pagination.page,
-      pagination.limit,
-      search.value
-    )
+    const res = await PropertyServices.list(pagination.page, pagination.limit, search.value)
     const newArray = res.data?.rows?.map((i: any) => {
       return { ...i, cnpj: formatCNPJ(i.cnpj) }
     })
@@ -93,9 +122,13 @@ async function listItems() {
   }
 }
 
-const debouncedFn = useDebounceFn(() => {
-  listItems()
-}, 1000, { maxWait: 5000 })
+const debouncedFn = useDebounceFn(
+  () => {
+    listItems()
+  },
+  1000,
+  { maxWait: 5000 }
+)
 
 function handleAddProperty() {
   router.push('/adicionar-imovel')
@@ -120,7 +153,14 @@ async function deleteItem(item: any) {
 }
 
 async function editItem(item: any) {
-  router.push(`/editar-imovel/${item.id_property}`)
+  router.push({
+    path: `/editar-imovel/${item.id_property}`,
+    query: {
+      page: String(pagination.page),
+      limit: String(pagination.limit),
+      search: search.value || ''
+    }
+  })
 }
 function handleSearch(event: any) {
   search.value = event
@@ -131,12 +171,27 @@ function handleSearch(event: any) {
 <template>
   <div>
     <h3 class="text-3xl font-medium text-gray-700">Imóveis</h3>
-    <Table @remove-search="search = ''" @change-perPage="pagination.limit = $event" :filter-default="true"
-      :columns="columns" :rows="items" :total-page="pagination.total" :current-page="pagination.page"
-      :items-per-page="pagination.limit" :loading="loading" @edit-item="editItem"
-      @change-page="pagination.page = $event" @delete-item="deleteItem" @search="handleSearch($event)">
-      <template #rede="{ row }">
-        <p>{{ row.NetworkCompany?.name }}</p>
+    <Table
+      :filter-default="true"
+      :columns="columns"
+      :rows="items"
+      :total-page="pagination.total"
+      :current-page="pagination.page"
+      :items-per-page="pagination.limit"
+      :searchProps="search"
+      :loading="loading"
+      @remove-search="search = ''"
+      @change-perPage="pagination.limit = $event"
+      @edit-item="editItem"
+      @change-page="pagination.page = $event"
+      @delete-item="deleteItem"
+      @search="handleSearch($event)"
+    >
+      <template #status="{ row }">
+        <Badge v-if="row.status" :text="row.status" />
+      </template>
+      <template #sale_value="{ row }">
+        <span> {{ formatToBRL(row.sale_value) }} </span>
       </template>
       <template #BtnTable>
         <div class="flex justify-end">
