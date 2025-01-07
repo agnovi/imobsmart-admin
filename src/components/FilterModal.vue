@@ -24,7 +24,7 @@ const closeModal = () => {
 };
 
 const confirmAction = () => {
-    emit('filter', filter.value);
+    emit('filter', { isFilterModal: true, ...filter.value});
     closeModal()
 };
 

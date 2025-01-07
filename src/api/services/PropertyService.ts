@@ -22,13 +22,13 @@ export function list(filters?: any) {
     queryParams.push(`finalidade=${finalidade.join(",")}`);
   }
   // Preço mínimo setar
-  if (filters?.price?.min && filters.price.min !== "0.00") {
+  if (filters.isFilterModal) {
     const priceMin = String(filters.price.min).replace(/\s/g, "");
     queryParams.push(`valorMin=${priceMin}`);
   }
 
   // Preço máximo
-  if (filters?.price?.max && filters.price.max !== "0.00") {
+  if (filters.isFilterModal) {
     const priceMax = String(filters.price.max).replace(/\s/g, "");
     queryParams.push(`valorMax=${priceMax}`);
   }

@@ -28,7 +28,7 @@
             disabled
               ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]'
               : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
-          ]" />
+          ]" @input="() => { emit('input') }" />
 
           <input v-else :id="props.id || props.name" :aria-label="props.name" v-maska :data-maska="mask" :type="type"
             v-bind="field" :placeholder="placeholder" class="border-0 bg-transparent outlined-0" style="box-shadow: none" :class="[
@@ -98,6 +98,7 @@ interface IProps {
   prependIcon?: string
   appendIcon?: string
   min?: string | number
+  max?: string | number
   minLength?: string | number
 }
 
@@ -106,7 +107,7 @@ interface MaskaDetail {
   unmasked: string
   completed: boolean
 }
-const emit = defineEmits(['maskaComplete', 'blur'])
+const emit = defineEmits(['maskaComplete', 'blur', 'input'])
 
 const config = {
   masked: false,
