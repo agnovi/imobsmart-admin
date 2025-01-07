@@ -12,6 +12,7 @@ const props = withDefaults(
     disabled: false,
   }
 );
+const emit = defineEmits(["input"]);
 
 const inputValue = defineModel<any>();
 </script>
@@ -23,7 +24,7 @@ const inputValue = defineModel<any>();
     }}</label>
     <v-select v-model="inputValue" :multiple="multiple" :placeholder="placeholder || 'Selecionar'"
       :options="props.options || []" :reduce="(opt: any) => opt.value"
-      class="text-sm border border-[#d2d3d4] rounded-md disabled:bg-gray-400" :disabled="props.disabled" />
+      class="text-sm border border-[#d2d3d4] rounded-md disabled:bg-gray-400" :disabled="props.disabled" @option:selected="() => emit('input', inputValue)" />
     <div v-if="multiple" class="flex flex-wrap gap-1 mt-1.5">
       <div v-for="option in inputValue" :key="option.value" class="bg-gray-200 flex rounded-full text-sm px-2 py-1">
         {{ option.label }}

@@ -2,6 +2,9 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import Table from '../../components/Table.vue'
 import Badge from '../../components/Badge.vue'
+import PropertyFilterModal from '../../components/FilterModal.vue'
+import Button from '../../components/Button.vue'
+import Filter from '../../components/icones/Filter.vue'
 import * as PropertyServices from '@/api/services/PropertyService'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
@@ -14,8 +17,11 @@ import { formatToBRL } from '@/util/helpers'
 const { token } = useAuth()
 const router = useRouter()
 const toast = useToast()
+const modalOpen = ref(false);
 const items = ref<IProperty[]>([])
 const loading = ref(false)
+const filters = ref<any>({});
+
 const pagination = reactive({
   page: 1,
   limit: 10,
@@ -106,10 +112,20 @@ watch(
   { deep: true }
 )
 
+watch(
+    () => filters.value,
+    () => {
+        listItems();
+    },
+    { deep: true }
+);
+
 async function listItems() {
   loading.value = true
   try {
-    const res = await PropertyServices.list(pagination.page, pagination.limit, search.value)
+    const filtersJson = localStorage.getItem('filters');
+    const filtersObject = filtersJson ? JSON.parse(filtersJson) : null;
+    const res = await PropertyServices.list({ search: search.value, page: pagination.page, limit: pagination.limit,  ...filtersObject })
     const newArray = res.data?.rows?.map((i: any) => {
       return { ...i, cnpj: formatCNPJ(i.cnpj) }
     })
@@ -166,6 +182,13 @@ function handleSearch(event: any) {
   search.value = event
   console.log(search.value)
 }
+
+function handleFilter(filter: any) {
+    search.value = ''
+
+    localStorage.setItem('filters', JSON.stringify(filter))
+    filters.value = JSON.parse(JSON.stringify(filter));
+}
 </script>
 
 <template>
@@ -195,6 +218,10 @@ function handleSearch(event: any) {
       </template>
       <template #BtnTable>
         <div class="flex justify-end">
+           <button borderColor="border-[#F9FAFB]" bgColor="bg-[#F9FAFB]" class="flex items-center border border-gray-300 rounded-[6px] gap-2 text-sm px-2 mx-2"
+              @click="modalOpen = true">
+            <Filter /> <span class="text-[#353535] hidden md:block">Filtro avançado</span>
+          </button>
           <!-- <button class="btn-import mx-2 whitespace-nowrap" @click="router.push('/importar-imoveis')">
             <div class="flex">
               <span> Importar imóveis </span>
@@ -208,6 +235,7 @@ function handleSearch(event: any) {
       </template>
     </Table>
   </div>
+  <PropertyFilterModal :isOpen="modalOpen" @close="modalOpen = false" @filter="handleFilter($event)" />
 </template>
 
 <style scoped>
