@@ -184,6 +184,7 @@ function handleSearch(event: any) {
 }
 
 function handleFilter(filter: any) {
+    pagination.page = 1
     search.value = ''
 
     localStorage.setItem('filters', JSON.stringify(filter))
