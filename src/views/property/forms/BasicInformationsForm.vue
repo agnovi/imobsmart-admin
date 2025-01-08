@@ -37,11 +37,24 @@ onMounted(() => {
 <template>
   <section>
     <div class="flex items-center mb-4 gap-3">
-      <h4 class="text-xl font-semibold text-gray-700 ">Informações Básicas</h4>
-      <div v-if="data.link_table">
-        <a v-tooltip="'Tabela'" :href="data.link_table" target="_black">
-            <Pdf />
+      <h4 class="text-xl font-semibold text-gray-700">Informações Básicas</h4>
+    </div>
+    <div class="flex items-center gap-3 mb-4">
+      <div class=" items-center gap-3">
+        <p class="text-gray-700">Imobiliária</p>
+        <div class="flex items-center gap-3">
+          <p v-if="data.name_table" class="">{{ data.name_table }}</p>
+        </div>
+      </div>
+      <div class=" items-center gap-3 ml-10">
+        <p class="text-gray-700">Link da tabela</p>
+        <div class="flex items-center gap-3 mt-3">
+          <div v-if="data.link_table">
+            <a v-tooltip="'Tabela'" :href="data.link_table" target="_black">
+              <Pdf />
             </a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">

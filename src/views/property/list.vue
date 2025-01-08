@@ -34,7 +34,8 @@ const columns = ref([
   },
   {
     label: 'Imóvel',
-    key: 'title'
+    key: 'title',
+    custom: true
   },
   {
     label: 'Bairro',
@@ -60,6 +61,16 @@ const columns = ref([
   {
     label: 'Vagas',
     key: 'vacancies'
+  },
+  {
+    label: 'Imobiliária',
+    key: 'imobiliaria',
+    custom: true
+  },
+  {
+    label: 'Link da tabela',
+    key: 'tableLink',
+    custom: true
   },
   {
     label: 'Status',
@@ -214,13 +225,19 @@ function handleFilter(filter: any) {
       <template #status="{ row }">
         <Badge v-if="row.status" :text="row.status" />
       </template>
-      <template #sale_value="{ row }">
-        <span> {{ formatToBRL(row.sale_value) }} </span>
+      <template #title="{ row }">
+         <p class="max-w-[120px] text-wrap text-sm">{{ row.title }}</p>
       </template>
-      <template #actions="{ row}">
-        <a v-if="row.link_table" v-tooltip="'Tabela'" :href="row.link_table" target="_black">
+      <template #imobiliaria="{ row }">
+         <p class="max-w-[120px] text-wrap text-sm">{{ row.name_table }}</p>
+      </template>
+      <template #tableLink="{ row }">
+         <a v-if="row.link_table" v-tooltip="'Tabela'" :href="row.link_table" target="_black">
         <Pdf />
         </a>
+      </template>
+      <template #sale_value="{ row }">
+        <span> {{ formatToBRL(row.sale_value) }} </span>
       </template>
       <template #BtnTable>
         <div class="flex justify-end">
