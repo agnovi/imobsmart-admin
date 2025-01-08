@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { http } from '@/api/api'
+import Pdf from '@/components/icones/Pdf.vue'
 
 import type { IProperty } from '@/types/property'
 const data = defineModel<IProperty>({
@@ -35,7 +36,14 @@ onMounted(() => {
 
 <template>
   <section>
-    <h4 class="text-xl font-semibold text-gray-700 mb-4">Informações Básicas</h4>
+    <div class="flex items-center mb-4 gap-3">
+      <h4 class="text-xl font-semibold text-gray-700 ">Informações Básicas</h4>
+      <div v-if="data.link_table">
+        <a v-tooltip="'Tabela'" :href="data.link_table" target="_black">
+            <Pdf />
+            </a>
+      </div>
+    </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
       <base-input v-model="data.name_table" label="Nome da Tabela" />
       <base-input v-model="data.link_table" label="Link da Tabela" />

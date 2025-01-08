@@ -2,8 +2,8 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import Table from '../../components/Table.vue'
 import Badge from '../../components/Badge.vue'
+import Pdf from '../../components/icones/Pdf.vue'
 import PropertyFilterModal from '../../components/FilterModal.vue'
-import Button from '../../components/Button.vue'
 import Filter from '../../components/icones/Filter.vue'
 import * as PropertyServices from '@/api/services/PropertyService'
 import { useRouter } from 'vue-router'
@@ -216,6 +216,11 @@ function handleFilter(filter: any) {
       </template>
       <template #sale_value="{ row }">
         <span> {{ formatToBRL(row.sale_value) }} </span>
+      </template>
+      <template #actions="{ row}">
+        <a v-if="row.link_table" v-tooltip="'Tabela'" :href="row.link_table" target="_black">
+        <Pdf />
+        </a>
       </template>
       <template #BtnTable>
         <div class="flex justify-end">

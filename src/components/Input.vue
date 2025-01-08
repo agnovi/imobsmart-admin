@@ -68,7 +68,6 @@ import LSpinner from './Spinner.vue'
 import * as validations from '../util/validators'
 import { computed } from 'vue'
 import { reactive } from 'vue'
-import { ref } from 'vue'
 import { onMounted } from 'vue'
 
 const objValid: any = validations
@@ -127,20 +126,6 @@ const configMoney = reactive({
   shouldRound: true,
   focusOnRight: false
 })
-const config = {
-  masked: false,
-  prefix: 'R$',
-  suffix: '',
-  thousands: '.',
-  decimal: ',',
-  precision: 2,
-  disableNegative: false,
-  disabled: false,
-  allowBlank: true,
-  shouldRound: true,
-  focusOnRight: false
-}
-
 const value = defineModel<any>()
 
 const onMaska = (event: CustomEvent<MaskaDetail>) => {
