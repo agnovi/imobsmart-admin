@@ -24,11 +24,14 @@
           </slot>
         </div>
         <slot v-bind="field">
-          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model.number="value" v-bind="config" class="border-0 bg-transparent outlined-0" style="box-shadow: none" :class="[
+          <Money3Component v-if="isMoney" :id="props.id || props.name" v-model.number="value" v-bind="configMoney" class="border-0 bg-transparent outlined-0" style="box-shadow: none" :class="[
             disabled
               ? ' bg-dark flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]'
               : 'flex-1 p-2 outline-0 text-md w-full rounded-md placeholder:text-[#D6D6D6]',
-          ]" @input="() => { emit('input') }" />
+          ]" @input="(e: any) => {
+             emit('input');
+             handleBlank(e);
+             }" />
 
           <input v-else :id="props.id || props.name" :aria-label="props.name" v-maska :data-maska="mask" :type="type"
             v-bind="field" :placeholder="placeholder" class="border-0 bg-transparent outlined-0" style="box-shadow: none" :class="[
@@ -64,9 +67,11 @@ import { Field, defineRule } from 'vee-validate'
 import LSpinner from './Spinner.vue'
 import * as validations from '../util/validators'
 import { computed } from 'vue'
+import { reactive } from 'vue'
+import { ref } from 'vue'
+import { onMounted } from 'vue'
 
 const objValid: any = validations
-
 // type Rules = keyof typeof validations
 
 Object.keys(objValid).forEach((x: string) => {
@@ -109,6 +114,19 @@ interface MaskaDetail {
 }
 const emit = defineEmits(['maskaComplete', 'blur', 'input'])
 
+const configMoney = reactive({
+  masked: false,
+  prefix: 'R$',
+  suffix: '',
+  thousands: '.',
+  decimal: ',',
+  precision: 2,
+  disableNegative: false,
+  disabled: false,
+  allowBlank: true,
+  shouldRound: true,
+  focusOnRight: false
+})
 const config = {
   masked: false,
   prefix: 'R$',
@@ -118,10 +136,7 @@ const config = {
   precision: 2,
   disableNegative: false,
   disabled: false,
-  min: 0,
-  max: 0,
-  allowBlank: false,
-  minimumNumberOfCharacters: 0,
+  allowBlank: true,
   shouldRound: true,
   focusOnRight: false
 }
@@ -134,8 +149,26 @@ const onMaska = (event: CustomEvent<MaskaDetail>) => {
   }
 }
 
+function handleBlank(e:any) {
+  if (e.data == '0' && !value.value) {
+    configMoney.allowBlank = false
+    value.value = 0
+  } else if (e.data === null) {
+    configMoney.allowBlank = true
+    setTimeout(() => {
+      value.value = ''
+    }, 100);
+  }
+}
+
 const cryptoName = computed(() => {
   return self.crypto.randomUUID()
+})
+
+onMounted(() => {
+  if (props.isMoney && !value.value) {
+    value.value = ''
+  }
 })
 </script>
 

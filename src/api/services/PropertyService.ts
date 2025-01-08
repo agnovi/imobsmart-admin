@@ -24,13 +24,17 @@ export function list(filters?: any) {
   // Preço mínimo setar
   if (filters.isFilterModal) {
     const priceMin = String(filters.price.min).replace(/\s/g, "");
-    queryParams.push(`valorMin=${priceMin}`);
+    if (priceMin.length) {
+      queryParams.push(`valorMin=${priceMin}`);
+    }
   }
 
   // Preço máximo
   if (filters.isFilterModal) {
     const priceMax = String(filters.price.max).replace(/\s/g, "");
-    queryParams.push(`valorMax=${priceMax}`);
+    if (priceMax.length){
+      queryParams.push(`valorMax=${priceMax}`);
+    }
   }
 
   // Área mínima e máxima
