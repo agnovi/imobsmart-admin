@@ -27,55 +27,66 @@ const pagination = reactive({
   limit: 10,
   total: 0
 })
+const sort = ref("id_property-asc");
 const columns = ref([
   {
     label: 'ID',
-    key: 'id_property'
+    key: 'id_property',
+    sort: 'asc'
   },
   {
     label: 'Imóvel',
     key: 'title',
-    custom: true
+    custom: true,
+    sort: 'asc'
   },
   {
     label: 'Bairro',
-    key: 'neighborhoods'
+    key: 'neighborhoods',
+    sort: 'asc'
   },
   {
     label: 'Cidade',
-    key: 'citys'
+    key: 'citys',
+    sort: 'asc'
   },
   {
     label: 'Valor',
     key: 'sale_value',
-    custom: true
+    custom: true,
+    sort: 'asc'
   },
   {
     label: 'Dormitórios',
-    key: 'dormitory_number'
+    key: 'dormitory_number',
+    sort: 'asc'
   },
   {
     label: 'Suites',
-    key: 'suites'
+    key: 'suites',
+    sort: 'asc'
   },
   {
     label: 'Vagas',
-    key: 'vacancies'
+    key: 'vacancies',
+    sort: 'asc'
   },
   {
     label: 'Imobiliária',
-    key: 'imobiliaria',
-    custom: true
+    key: 'name_table',
+    custom: true,
+    sort: 'asc'
   },
   {
     label: 'Link da tabela',
     key: 'tableLink',
-    custom: true
+    custom: true,
   },
   {
     label: 'Status',
     key: 'status',
-    custom: true
+    custom: true,
+    sort: 'asc'
   },
   {
     label: '',
@@ -90,6 +101,7 @@ onMounted(() => {
     pagination.page = query.page ? Number(query.page) : 1
     pagination.limit = query.limit ? Number(query.limit) : 10
     search.value = query.search ? String(query.search) : ''
+    sort.value = query.sort ? String(query.sort) : 'id_property-asc'
 
     router.replace({ path: router.currentRoute.value.path, query: {} })
     listItems()
@@ -111,6 +123,7 @@ watch(
 watch(
   () => pagination.page,
   () => {
+    if(loading.value) return
     listItems()
   },
   { deep: true }
@@ -118,6 +131,7 @@ watch(
 watch(
   () => pagination.limit,
   () => {
+    if(loading.value) return
     listItems()
   },
   { deep: true }
@@ -131,12 +145,21 @@ watch(
     { deep: true }
 );
 
+watch(
+  () => sort.value,
+  () => {
+    if(loading.value) return
+    listItems();
+  },
+  { deep: true }
+);
+
 async function listItems() {
   loading.value = true
   try {
     const filtersJson = localStorage.getItem('filters');
     const filtersObject = filtersJson ? JSON.parse(filtersJson) : null;
-    const res = await PropertyServices.list({ search: search.value, page: pagination.page, limit: pagination.limit,  ...filtersObject })
+    const res = await PropertyServices.list({ search: search.value, page: pagination.page, limit: pagination.limit,  ...filtersObject, sort: sort.value, })
     const newArray = res.data?.rows?.map((i: any) => {
       return { ...i, cnpj: formatCNPJ(i.cnpj) }
     })
@@ -185,7 +208,8 @@ async function editItem(item: any) {
     query: {
       page: String(pagination.page),
       limit: String(pagination.limit),
-      search: search.value || ''
+      search: search.value || '',
+      sort: sort.value || ''
     }
   })
 }
@@ -201,6 +225,16 @@ function handleFilter(filter: any) {
     localStorage.setItem('filters', JSON.stringify(filter))
     filters.value = JSON.parse(JSON.stringify(filter));
 }
+
+function handleSort(e: any) {
+    const itemOrder = e.sort === 'asc' ? 'desc' : 'asc';
+    columns.value.map((column) => {
+        if (column.key === e.name) {
+            column.sort = itemOrder;
+        }
+    });
+    sort.value = `${e.name}-${itemOrder}`;
+}
 </script>
 
 <template>
@@ -215,6 +249,7 @@ function handleFilter(filter: any) {
       :items-per-page="pagination.limit"
       :searchProps="search"
       :loading="loading"
+      @itemSort="handleSort"
       @remove-search="search = ''"
       @change-perPage="pagination.limit = $event"
       @edit-item="editItem"
@@ -228,7 +263,7 @@ function handleFilter(filter: any) {
       <template #title="{ row }">
          <p class="max-w-[120px] text-wrap text-sm">{{ row.title }}</p>
       </template>
-      <template #imobiliaria="{ row }">
+      <template #name_table="{ row }">
          <p class="max-w-[120px] text-wrap text-sm">{{ row.name_table }}</p>
       </template>
       <template #tableLink="{ row }">

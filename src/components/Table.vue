@@ -3,6 +3,8 @@ import { computed, ref, watch } from 'vue'
 import Pagination from './Pagination.vue'
 import Iimport from './icones/Iimport.vue'
 import IDownload from './icones/IDownload.vue'
+import IconAsc from './icones/Asc.vue'
+import IconDesc from './icones/Desc.vue'
 
 
 export interface ISelect {
@@ -186,10 +188,13 @@ watch(
                 class="px-6 py-3 text-[12px] text-left text-[#6B7280] uppercase border-b border-gray-200 bg-gray-50"
                 :class="{
       'justify-end': column.justifyEnd
-    }" @click="itemSort(column.key, column.sort)">
-                {{ column.label }}
-                <span v-if="column.sort && column.key !== 'actions'" class="ml-1">
-                  <i :class="column.sort === 'asc' ? 'fa fa-caret-up' : 'fa fa-caret-down'" />
+    }">
+                <span class="flex items-center">
+                  <span class="truncate text-[12px]">{{ column.label }}</span>
+                  <span v-if="column.sort && column.key !== 'actions'" class="cursor-pointer" @click="itemSort(column.key, column.sort)">
+                    <IconAsc v-if="column.sort === 'asc'" />
+                    <IconDesc v-else />
+                  </span>
                 </span>
               </th>
             </tr>

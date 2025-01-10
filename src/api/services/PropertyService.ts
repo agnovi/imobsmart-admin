@@ -105,6 +105,11 @@ export function list(filters?: any) {
   if (filters?.limit) {
     queryParams.push(`limit=${filters.limit}`);
   }
+
+  //query sort
+  if (filters?.sort) {
+    queryParams.push(`order=${filters.sort}`);
+  }
   
   // Montar URL final com os parâmetros de query
   const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
