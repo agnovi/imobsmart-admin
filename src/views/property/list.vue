@@ -194,7 +194,7 @@ async function deleteItem(item: any) {
     cancelButtonText: `Não`
   }).then((result: any) => {
     if (result.isConfirmed) {
-      PropertyServices.deleteItem(item.id).then((f: any) => {
+      PropertyServices.deleteItem(item.id_property).then((f: any) => {
         listItems()
         toast.success('Imóvel excluido com sucesso!')
       })

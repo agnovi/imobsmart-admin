@@ -122,7 +122,7 @@ async function removeUser(item: any) {
     }).then(async (result: any) => {
         if (result.isConfirmed) {
             try {
-                await http.delete(`/plans/${item.id}`)
+                await http.delete(`/plans/${item.id_plan}`)
                 toast.success('Plano deletado com sucesso')
                 listItems()
             } catch (error) {
