@@ -15,6 +15,12 @@ const typesNegotiation = ref([
   { label: 'Aluguel', value: 'locacao' }
 ])
 
+const statusOptions = ref([
+  { label: 'Publicado', value: 'PUBLICADO' },
+  { label: 'Rascunho', value: 'RASCUNHO' },
+  { label: 'Inativo', value: 'INATIVO' }
+])
+
 async function getTypesProperty() {
   try {
     const res = await http.get('property/types')
@@ -57,8 +63,15 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
-      <base-input v-model="data.name_table" label="Nome da Tabela" />
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-5">
+      <div class="col-span-1 sm:col-span-3">
+        <base-input v-model="data.name_table" label="Nome da Tabela" />
+      </div>
+      <base-input v-model="data.status" label="Status" is-slot>
+        <base-select v-model="data.status" :options="statusOptions" />
+      </base-input>
+    </div>
+    <div class="grid grid-cols-1 gap-6 mb-5">
       <base-input v-model="data.link_table" label="Link da Tabela" />
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

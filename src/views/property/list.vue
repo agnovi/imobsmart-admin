@@ -258,7 +258,12 @@ function handleSort(e: any) {
       @search="handleSearch($event)"
     >
       <template #status="{ row }">
-        <Badge v-if="row.status" :text="row.status" />
+        <Badge
+          v-if="row.status"
+          :text="row.status"
+          :bg-color="row.status === 'PUBLICADO' ? 'bg-green-100' : row.status === 'RASCUNHO' ? 'bg-yellow-100' : 'bg-red-100'"
+          :color="row.status === 'PUBLICADO' ? 'text-green-800' : row.status === 'RASCUNHO' ? 'text-yellow-800' : 'text-red-800'"
+        />
       </template>
       <template #title="{ row }">
          <p class="max-w-[120px] text-wrap text-sm">{{ row.title }}</p>

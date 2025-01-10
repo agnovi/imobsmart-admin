@@ -18,6 +18,7 @@ export interface IProperty {
   deleted_at?: any
   created_at?: string
   updated_at?: string
+  status?: StatusPropertys
   propertys_images?: PropertysImage[]
   images?: PropertysImage[]
   propertys_type?: PropertysType
