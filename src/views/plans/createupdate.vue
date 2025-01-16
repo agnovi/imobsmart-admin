@@ -106,7 +106,7 @@ const getIdPlan = async () => {
         data.value.is_company = res.data.is_company === 0 ? false : true
         data.value.parcel = res.data.parcel.value
         data.value.status = res.data.status
-        data.value.qtd_user = res.data.qtd_user
+        data.value.qtd_user = res.data.is_company === 0 ? 1 : res.data.qtd_user
     } catch (error) {
         console.log(error)
     } finally {
