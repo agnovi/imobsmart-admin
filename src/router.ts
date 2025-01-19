@@ -186,6 +186,22 @@ const routes: RouteRecordRaw[] = [
       auth: true
     }
   },
+  {
+    path: '/contrato',
+    name: 'Contrato',
+    component: () => import('./views/contracts/index.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: '/termos-de-uso',
+    name: 'Termos de uso',
+    component: () => import('./views/termsOfPolicy/index.vue'),
+    meta: {
+      auth: true
+    }
+  },
   // fim
   {
     path: '/:pathMath(.*)*',
