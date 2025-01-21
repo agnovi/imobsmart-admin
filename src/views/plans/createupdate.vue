@@ -14,18 +14,28 @@
 
                 <Form @submit="handleSubmit">
 
-                    <div class="w-full flex flex-col justify-end items-end ">
-                        <label>Empresarial</label>
-                        <input type="checkbox" v-model="data.is_company" class="peer sr-only opacity-0 mt-2"
-                            id="toggle" />
-                        <label for="toggle"
-                            class="relative  mt-2 flex h-6 w-11 cursor-pointer items-center rounded-full bg-gray-400 px-0.5 outline-gray-400 transition-colors before:h-5 before:w-5 before:rounded-full before:bg-white before:shadow before:transition-transform before:duration-300 peer-checked:bg-green-500 peer-checked:before:translate-x-full peer-focus-visible:outline peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gray-400 peer-checked:peer-focus-visible:outline-green-500">
-                            <span class="sr-only">Enable</span>
-                        </label>
+                    <div class="w-full flex gap-4 justify-end items-end ">
+                        <div class="flex flex-col items-end">
+                            <label>Promoção</label>
+                            <input type="checkbox" v-model="data.is_promotion" class="peer sr-only opacity-0 mt-2"
+                                id="togglePromocao" />
+                            <label for="togglePromocao"
+                                class="relative  mt-2 flex h-6 w-11 cursor-pointer items-center rounded-full bg-gray-400 px-0.5 outline-gray-400 transition-colors before:h-5 before:w-5 before:rounded-full before:bg-white before:shadow before:transition-transform before:duration-300 peer-checked:bg-green-500 peer-checked:before:translate-x-full peer-focus-visible:outline peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gray-400 peer-checked:peer-focus-visible:outline-green-500">
+                                <span class="sr-only">Enable</span>
+                            </label>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <label>Empresarial</label>
+                            <input type="checkbox" v-model="data.is_company" class="peer sr-only opacity-0 mt-2"
+                                id="toggle" />
+                            <label for="toggle"
+                                class="relative  mt-2 flex h-6 w-11 cursor-pointer items-center rounded-full bg-gray-400 px-0.5 outline-gray-400 transition-colors before:h-5 before:w-5 before:rounded-full before:bg-white before:shadow before:transition-transform before:duration-300 peer-checked:bg-green-500 peer-checked:before:translate-x-full peer-focus-visible:outline peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gray-400 peer-checked:peer-focus-visible:outline-green-500">
+                                <span class="sr-only">Enable</span>
+                            </label>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-                        <base-input v-model="data.name" type="text" label="Nome do plano"
-                            rules="required|validateNameAndSurname" />
+                        <base-input v-model="data.name" type="text" label="Nome do plano" rules="required" />
 
                         <div class="flex-1 w-full">
                             <base-input v-model="data.status" label="Status" is-slot>
@@ -34,14 +44,17 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-                        <base-input v-model="data.value_total" is-money label="Valor do plano" min="0" />
+                        <base-input v-model="data.value_total" is-money
+                            :label="`Valor do plano ${data.is_promotion ? 'com desconto' : ''}`" min="0" />
                         <base-input v-model="data.parcel" label="Tipo de negociação" is-slot>
                             <base-select v-model="data.parcel" :options="ciclos" />
                         </base-input>
                     </div>
-                    <div v-if="data.is_company" class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-                        <base-input v-model="data.qtd_user" type="number" label="Quantidade de usuário" min="0" />
-
+                    <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                        <base-input v-if="data.is_company" v-model="data.qtd_user" type="number"
+                            label="Quantidade de usuário" min="0" />
+                        <base-input v-if="data.is_promotion" v-model="data.value_without_discount" is-money
+                            label="Valor do plano sem desconto" min="0" />
                     </div>
                     <div class="flex justify-end mt-8">
                         <base-button type="submit" :disabled="loading" :loading="loading" class="max-w-fit">
@@ -77,6 +90,8 @@ const data = ref({
     parcel: 'MONTHLY',
     status: 1,
     qtd_user: 0,
+    is_promotion: false,
+    value_without_discount: 0
 })
 const loading = ref(false)
 const loadingData = ref(false)
@@ -106,7 +121,9 @@ const getIdPlan = async () => {
         data.value.is_company = res.data.is_company === 0 ? false : true
         data.value.parcel = res.data.parcel.value
         data.value.status = res.data.status
-        data.value.qtd_user = res.data.is_company === 0 ? 1 : res.data.qtd_user
+        data.value.qtd_user = res.data.qtd_user
+        data.value.is_promotion = res.data.is_promotion === 1 ? true : false,
+            data.value.value_without_discount = res.data.is_promotion === 1 ? res.data.value_without_discount : 0
     } catch (error) {
         console.log(error)
     } finally {
@@ -117,11 +134,20 @@ const getIdPlan = async () => {
 const handleSubmit = async () => {
     loading.value = true
     try {
-        console.log('submit', data.value)
+        const dataPlan = {
+            name: data.value.name,
+            value_total: data.value.value_total,
+            is_company: data.value.is_company,
+            parcel: data.value.parcel,
+            status: data.value.status,
+            qtd_user: data.value.is_company === false ? 1 : data.value.qtd_user,
+            is_promotion: data.value.is_promotion,
+            value_without_discount: data.value.is_promotion ? data.value.value_without_discount : 0
+        }
         if (route.params.id) {
-            await http.patch(`/plans/${route.params.id}`, data.value)
+            await http.patch(`/plans/${route.params.id}`, dataPlan)
         } else {
-            await http.post('/plans', data.value)
+            await http.post('/plans', dataPlan)
         }
 
         toast.success('Plano salvo com sucesso')

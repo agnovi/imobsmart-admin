@@ -34,9 +34,24 @@ const columns = ref([
 
     },
     {
-        label: 'Valor Total',
+        label: 'Valor',
         key: 'valor',
         custom: true
+    },
+    {
+        label: 'Desconto',
+        key: 'desconto',
+
+    },
+    {
+        label: 'Valor com desconto',
+        key: 'valorComDesconto',
+
+    },
+    {
+        label: 'Porcentagem',
+        key: 'porcentagem',
+
     },
     {
         label: 'Status',
@@ -80,16 +95,26 @@ async function listItems() {
     try {
         const res = await http.get(`/plans?page=${pagination.page}&limit=${pagination.limit}${search.value ? `&search=${search.value}` : ''}`)
         pagination.total = res.data?.pagination?.totalQuantity
-        plans.value = res.data?.rows.map((plan: any) => {
+
+        const teste = res.data?.rows.map((plan: any) => {
             return {
                 id: plan.id_plan,
                 nome: plan.name,
                 empresarial: plan.is_company === 1 ? 'Sim' : 'Não',
-                ciclo: plan.parcel.name,
-                valor: plan.value_total,
-                status: plan.status === 1 ? 'ATIVO' : 'INATIVO'
+                ciclo: plan.parcel?.name,
+                valor: plan.is_promotion === 1 ? plan.value_without_discount : plan.value_total,
+                status: plan.status === 1 ? 'ATIVO' : 'INATIVO',
+                desconto: plan.is_promotion === 1 ? 'Sim' : 'Não',
+                valorComDesconto: plan.is_promotion === 1 ? plan.value_total.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }) : 'R$ 0,00',
+                porcentagem: `${parseFloat(plan.percent).toFixed(2)}%`,
             }
         })
+
+
+        plans.value = teste
     } catch (error) {
         loading.value = false
     } finally {
@@ -122,7 +147,7 @@ async function removeUser(item: any) {
     }).then(async (result: any) => {
         if (result.isConfirmed) {
             try {
-                await http.delete(`/plans/${item.id_plan}`)
+                await http.delete(`/plans/${item.id}`)
                 toast.success('Plano deletado com sucesso')
                 listItems()
             } catch (error) {
