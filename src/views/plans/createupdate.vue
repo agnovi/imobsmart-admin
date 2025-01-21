@@ -35,8 +35,7 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-                        <base-input v-model="data.name" type="text" label="Nome do plano"
-                            rules="required|validateNameAndSurname" />
+                        <base-input v-model="data.name" type="text" label="Nome do plano" rules="required" />
 
                         <div class="flex-1 w-full">
                             <base-input v-model="data.status" label="Status" is-slot>
