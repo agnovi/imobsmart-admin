@@ -6,6 +6,7 @@ const props = withDefaults(
     multiple?: boolean;
     placeholder?: string;
     disabled?: boolean;
+    clearable?: boolean;
   }>(),
   {
     multiple: false,
@@ -24,10 +25,11 @@ const inputValue = defineModel<any>();
     }}</label>
     <v-select v-model="inputValue" :multiple="multiple" :placeholder="placeholder || 'Selecionar'"
       :options="props.options || []" :reduce="(opt: any) => opt.value"
+      :clearable="clearable"
       class="text-sm border border-[#d2d3d4] rounded-md disabled:bg-gray-400" :disabled="props.disabled" @option:selected="() => emit('input', inputValue)" />
     <div v-if="multiple" class="flex flex-wrap gap-1 mt-1.5">
       <div v-for="option in inputValue" :key="option.value" class="bg-gray-200 flex rounded-full text-sm px-2 py-1">
-        {{ option.label }}
+        {{ option }}
         <button v-if="multiple" @click="inputValue.splice(inputValue.indexOf(option), 1)" class="ml-1">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

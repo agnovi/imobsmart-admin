@@ -227,7 +227,7 @@ onMounted(() => {
                 <Select v-model="filter.type" name="type" label="Tipo do Imóvel" :options="residentialOptions" />
             </div>
             <div class="col-span-12 md:col-span-2 xl:col-span-1">
-                <Select multiple v-model="filter.cities" name="cities" label="Cidades"
+                <Select multiple v-model="filter.cities" name="cities" :clearable="false" label="Cidades"
                     placeholder="Selecionar cidades" :options="optionsCities" @input="getBairros" />
             </div>
             <div class="col-span-12 md:col-span-2 xl:col-span-1">
